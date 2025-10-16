@@ -15,14 +15,32 @@ use App\Http\Controllers\UserController;
 |
 */
 
-// Rutas de autenticación
-Route::get('/', [AuthController::class, 'showLogin'])->name('login');
-Route::get('/index', function () {
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// Página de inicio
+Route::get('/', function () {
     return view('index');
 })->name('index');
+
+// Rutas de autenticación
+
+// Mostrar el formulario de login (GET)
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+
+// Procesar login (POST)
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+// Mostrar formulario de registro (GET)
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+
+// Procesar registro (POST)
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+// Logout (POST)
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Dashboard redirige según rol
