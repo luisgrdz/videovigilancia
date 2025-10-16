@@ -9,4 +9,4 @@
     </div>
     <button class="btn btn-primary">Tomar Foto</button>
     <button class="btn btn-success">Activar Grabación</button>
-@endsection
+@endsection_
