@@ -16,7 +16,14 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+
+            // Contraseña puede ser nula hasta que se genere temporal
+            $table->string('password')->nullable();
+
+            // Campos nuevos para roles y contraseña temporal
+            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->boolean('is_temp_password')->default(true);
+
             $table->rememberToken();
             $table->timestamps();
         });
@@ -42,8 +49,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

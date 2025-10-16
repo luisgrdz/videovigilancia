@@ -1,45 +1,38 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
-use Livewire\Volt\Volt;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 
-/* Route::get('/', function () {
-    return view('welcome');
-})->name('home'); */
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Aquí se definen todas las rutas de la aplicación.
+| Se mantiene solo lo esencial y se usan controladores propios.
+|
+*/
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/Camaras', [App\Http\Controllers\CamarasController::class, 'index'])->name('camaras');
-Route::get('/Administracion', [App\Http\Controllers\AdministracionController::class, 'index'])->name('camaras');
-Route::get('/Ajustes', [App\Http\Controllers\AjustesController::class, 'index'])->name('camaras');
-Route::get('/Historial', [App\Http\Controllers\HistorialController::class, 'index'])->name('camaras');
-Route::get('/Notificacion', [App\Http\Controllers\NotificacionController::class, 'index'])->name('camaras');
+// Rutas de autenticación
+Route::get('/', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/index', function () {
+    return view('index');
+})->name('index');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Dashboard redirige según rol
+Route::middleware('auth')->group(function () {
 
+    // Admin
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
+        ->name('admin.dashboard');
 
-
-
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
-Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', 'settings/profile');
-
-    Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
-    Volt::route('settings/password', 'settings.password')->name('password.edit');
-    Volt::route('settings/appearance', 'settings.appearance')->name('appearance.edit');
-
-    Volt::route('settings/two-factor', 'settings.two-factor')
-        ->middleware(
-            when(
-                Features::canManageTwoFactorAuthentication()
-                    && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
-                ['password.confirm'],
-                [],
-            ),
-        )
-        ->name('two-factor.show');
+    // Usuario normal
+    Route::get('/user/dashboard', [UserController::class, 'dashboard'])
+        ->name('user.dashboard');
 });
-
-require __DIR__.'/auth.php';
