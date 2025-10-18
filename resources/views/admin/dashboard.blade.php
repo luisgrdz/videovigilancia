@@ -17,8 +17,7 @@
 
 <h3>Cámaras</h3>
 <ul>
-    @foreach($cameras as $camera)
-        <li><a href="{{ route('cameras.show', $camera->id) }}">{{ $camera->name ?? $camera->ip }}</a></li>
-    @endforeach
+    <a href="{{ route('cameras.index') }}" class="btn btn-primary">Ver todas las cámaras</a>
+
 </ul>
 @endsection

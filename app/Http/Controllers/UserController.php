@@ -12,6 +12,6 @@ class UserController extends Controller
             abort(403, 'Acceso no autorizado');
         }
 
-        return view('dashboards.user');
+        return view('users/dashboard');
     }
 }

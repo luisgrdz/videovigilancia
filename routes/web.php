@@ -43,6 +43,17 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 // Logout (POST)
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Personal
+Route::get('/users/add', [AdminController::class, 'showAddUser'])->name('users.add');
+Route::post('/users/add', [AdminController::class, 'addUser'])->name('users.store');
+
+// Cámaras
+Route::get('/cameras/add', [AdminController::class, 'showAddCamera'])->name('cameras.add');
+Route::post('/cameras/add', [AdminController::class, 'addCamera'])->name('cameras.store');
+
+Route::get('/cameras', [AdminController::class, 'viewCameras'])->name('cameras.index');
+Route::get('/cameras/{id}', [AdminController::class, 'viewCamera'])->name('cameras.show');
+
 // Dashboard redirige según rol
 Route::middleware('auth')->group(function () {
 
@@ -51,6 +62,6 @@ Route::middleware('auth')->group(function () {
         ->name('admin.dashboard');
 
     // Usuario normal
-    Route::get('/user/dashboard', [UserController::class, 'dashboard'])
-        ->name('user.dashboard');
+    Route::get('/users/dashboard', [UserController::class, 'dashboard'])
+        ->name('users.dashboard');
 });

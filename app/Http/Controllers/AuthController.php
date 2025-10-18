@@ -29,24 +29,20 @@ class AuthController extends Controller
         $request->validate([
             'name'  => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed', // valida confirmación
         ]);
-
-        $tempPassword = Str::random(8);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($tempPassword),
-            'is_temp_password' => true,
+            'password' => Hash::make($request->password),
+            'role' => 'user', // o admin según necesidad
+            'is_temp_password' => false, // ya tiene contraseña definida
         ]);
 
-        // Envía correo con la contraseña temporal
-        Mail::send('auth.email_temp_password', ['password' => $tempPassword], function ($m) use ($user) {
-            $m->to($user->email)->subject('Tu contraseña temporal');
-        });
-
-        return redirect()->route('login')->with('success', 'Registro exitoso. Revisa tu correo.');
+        return redirect()->route('login')->with('success', 'Usuario registrado correctamente.');
     }
+
 
     // Iniciar sesión
     public function login(Request $request)
@@ -60,7 +56,7 @@ class AuthController extends Controller
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             } else {
-                return redirect()->route('user.dashboard');
+                return redirect()->route('users.dashboard');
             }
         }
 

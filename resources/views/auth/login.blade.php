@@ -2,6 +2,14 @@
 @section('titulo', 'Iniciar sesión')
 
 @section('contenido')
+
+{{-- Mensaje flash de éxito (contraseña temporal o registro) --}}
+@if(session('success'))
+    <div class="alert alert-success text-center">
+        {{ session('success') }}
+    </div>
+@endif
+
 <div class="card col-md-6 mx-auto">
     <div class="card-body">
         <h4 class="mb-3">Iniciar sesión</h4>
@@ -17,3 +25,4 @@
     </div>
 </div>
 @endsection
+
