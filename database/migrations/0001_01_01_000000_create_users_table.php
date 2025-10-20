@@ -16,9 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-
-            // Contraseña puede ser nula hasta que se genere temporal
-            $table->string('password')->nullable();
+            $table->string('password');
 
             // Campos nuevos para roles y contraseña temporal
             $table->enum('role', ['admin', 'user'])->default('user');

@@ -20,9 +20,8 @@
             <button class="btn btn-dark w-100">Entrar</button>
         </form>
         <div class="mt-3 text-center">
-            <a href="{{ route('register') }}">Registrarse</a>
+            {{-- Registro público eliminado, solo admins pueden crear usuarios --}}
         </div>
     </div>
 </div>
 @endsection
-

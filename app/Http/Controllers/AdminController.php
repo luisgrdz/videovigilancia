@@ -30,7 +30,7 @@ class AdminController extends Controller
         $request->validate([
             'name'  => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'role'  => 'required|string|in:admin,user', // corregido
+            'role'  => 'required|string|in:admin,user',
         ]);
 
         // Genera contraseña temporal aleatoria
@@ -75,7 +75,7 @@ class AdminController extends Controller
     public function viewCameras()
     {
         $cameras = Camera::all();
-        return view('admin.view_cameras', compact('cameras'));
+        return view('admin.view_camaras', compact('cameras'));
     }
 
     // Ver cámara individual
