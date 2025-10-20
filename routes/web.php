@@ -15,53 +15,52 @@ use App\Http\Controllers\UserController;
 |
 */
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
 // Página de inicio
 Route::get('/', function () {
     return view('index');
 })->name('index');
 
-// Rutas de autenticación
 
-// Mostrar el formulario de login (GET)
+// --------------------------------------------
+// RUTAS DE AUTENTICACIÓN
+// --------------------------------------------
+
+// Login
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-
-// Procesar login (POST)
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
-// Mostrar formulario de registro (GET)
+// Registro
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-
-// Procesar registro (POST)
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
-// Logout (POST)
+// Cambio de contraseña (para usuarios con contraseña temporal)
+Route::get('/password/change', [AuthController::class, 'showChangePassword'])->name('password.change.form');
+Route::post('/password/change', [AuthController::class, 'updatePassword'])->name('password.change.post');
+
+// Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Personal
-Route::get('/users/add', [AdminController::class, 'showAddUser'])->name('users.add');
-Route::post('/users/add', [AdminController::class, 'addUser'])->name('users.store');
 
-// Cámaras
-Route::get('/cameras/add', [AdminController::class, 'showAddCamera'])->name('cameras.add');
-Route::post('/cameras/add', [AdminController::class, 'addCamera'])->name('cameras.store');
-
-Route::get('/cameras', [AdminController::class, 'viewCameras'])->name('cameras.index');
-Route::get('/cameras/{id}', [AdminController::class, 'viewCamera'])->name('cameras.show');
-
-// Dashboard redirige según rol
+// --------------------------------------------
+// RUTAS DE ADMINISTRACIÓN (requiere autenticación)
+// --------------------------------------------
 Route::middleware('auth')->group(function () {
 
-    // Admin
+    // Dashboard Admin
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
         ->name('admin.dashboard');
 
-    // Usuario normal
+    // Dashboard Usuario normal
     Route::get('/users/dashboard', [UserController::class, 'dashboard'])
         ->name('users.dashboard');
+
+    // Gestión de personal
+    Route::get('/users/add', [AdminController::class, 'showAddUser'])->name('users.add');
+    Route::post('/users/add', [AdminController::class, 'addUser'])->name('users.store');
+
+    // Gestión de cámaras
+    Route::get('/cameras', [AdminController::class, 'viewCameras'])->name('cameras.index');
+    Route::get('/cameras/add', [AdminController::class, 'showAddCamera'])->name('cameras.add');
+    Route::post('/cameras/add', [AdminController::class, 'addCamera'])->name('cameras.store');
+    Route::get('/cameras/{id}', [AdminController::class, 'viewCamera'])->name('cameras.show');
 });

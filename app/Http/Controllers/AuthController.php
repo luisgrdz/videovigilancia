@@ -7,42 +7,48 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
-    // Vista de login
+    // Mostrar login
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    // Vista de registro
+    // Mostrar registro
     public function showRegister()
     {
         return view('auth.register');
     }
 
-    // Registro nuevo usuario
-    public function register(Request $request)
+    
+    // Registrar nuevo usuario (para admins)
+    public function addUser(Request $request)
     {
         $request->validate([
             'name'  => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed', // valida confirmación
+            'role'  => 'required|string|in:admin,user', // solo admin o user
         ]);
+
+        // Genera contraseña temporal
+        $tempPassword = Str::random(8);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user', // o admin según necesidad
-            'is_temp_password' => false, // ya tiene contraseña definida
+            'role' => $request->role,
+            'password' => Hash::make($tempPassword),
+            'is_temp_password' => true,
         ]);
 
-        return redirect()->route('login')->with('success', 'Usuario registrado correctamente.');
-    }
+        // Opcional: enviar correo con la contraseña temporal
+        // Mail::to($user->email)->send(new TempPasswordMail($tempPassword));
 
+        return redirect()->route('users.add')
+            ->with('success', "Usuario creado. Contraseña temporal: {$tempPassword}");
+    }
 
     // Iniciar sesión
     public function login(Request $request)
@@ -53,15 +59,43 @@ class AuthController extends Controller
             $request->session()->regenerate();
             $user = Auth::user();
 
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } else {
-                return redirect()->route('users.dashboard');
+            // Si tiene contraseña temporal, obliga a cambiarla
+            if ($user->is_temp_password) {
+                return redirect()->route('password.change.form');
             }
+
+            // Redirige según rol
+            return $user->role === 'admin'
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('users.dashboard');
         }
 
         return back()->withErrors(['email' => 'Credenciales incorrectas.']);
     }
+
+    // Mostrar formulario de cambio de contraseña
+    public function showChangePassword()
+    {
+        return view('auth.change_password');
+    }
+
+    // Cambiar contraseña
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = Auth::user();
+        $user->password = Hash::make($request->password);
+        $user->is_temp_password = false;
+        $user->save();
+
+        return redirect()->route(
+            $user->role === 'admin' ? 'admin.dashboard' : 'users.dashboard'
+        )->with('success', 'Contraseña actualizada correctamente.');
+    }
+
 
     // Cerrar sesión
     public function logout(Request $request)
@@ -72,4 +106,5 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
+    
 }

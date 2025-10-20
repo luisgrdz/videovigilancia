@@ -1,4 +1,4 @@
-@extends('components/layouts.base')
+@extends('components/layouts.base_login')
 @section('titulo', 'Iniciar sesión')
 
 @section('contenido')
