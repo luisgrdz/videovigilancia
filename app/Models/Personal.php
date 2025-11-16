@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Camera extends Model
+class Personal extends Model
 {
+    protected $table = 'personal';
+
     protected $fillable = [
         'name',
-        'ip',
-        'location',
+        'position',
+        'phone',
         'status'
     ];
 }

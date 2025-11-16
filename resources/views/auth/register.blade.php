@@ -1,4 +1,4 @@
-@extends('components/layouts.base')
+@extends('components.layouts.base')
 @section('titulo', 'Registro')
 
 @section('contenido')
