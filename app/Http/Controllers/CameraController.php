@@ -24,10 +24,15 @@ class CameraController extends Controller
             'name'     => 'required|string|max:255',
             'ip'       => 'required|ip',
             'location' => 'nullable|string|max:255',
-            'status'   => 'required|in:active,inactive'
+            'status'   => 'required|boolean',
         ]);
 
-        Camera::create($request->all());
+        Camera::create([
+            'name'     => $request->name,
+            'ip'       => $request->ip,
+            'location' => $request->location,
+            'status'   => $request->status,
+        ]);
 
         return redirect()->route('cameras.index')
             ->with('success', 'Cámara registrada.');

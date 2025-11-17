@@ -35,17 +35,33 @@ Route::middleware(['auth', 'no_cache', 'role:admin'])->group(function (){
         Route::patch('/{user}/toggle', [PersonalController::class, 'toggle'])->name('toggle');
     });
 
-    Route::middleware(['auth', 'no_cache', 'role:admin,user'])->group(function () {
+    // Rutas cámaras para admin
+    Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::resource('cameras', CameraController::class);
+    });
 
-        Route::prefix('cameras')->name('cameras.')->group(function () {
-            Route::get('/', [CameraController::class, 'index'])->name('index');
-            Route::get('/create', [CameraController::class, 'create'])->name('create');
-            Route::post('/', [CameraController::class, 'store'])->name('store');
-            Route::get('/{camera}', [CameraController::class, 'show'])->name('show');
-            Route::get('/{camera}/edit', [CameraController::class, 'edit'])->name('edit');
-            Route::patch('/{camera}', [CameraController::class, 'update'])->name('update');
-            Route::delete('/{camera}', [CameraController::class, 'destroy'])->name('destroy');
-        });
+    // Rutas cámaras para user
+    Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
+        Route::resource('cameras', CameraController::class);
+    });
+
+    // Rutas de cámaras para admin
+    Route::middleware(['auth', 'no_cache', 'role:admin'])->prefix('admin/cameras')->name('admin.cameras.')->group(function () {
+        Route::get('/', [CameraController::class, 'index'])->name('index');
+        Route::get('/create', [CameraController::class, 'create'])->name('create');
+        Route::post('/', [CameraController::class, 'store'])->name('store');
+        Route::get('/{camera}', [CameraController::class, 'show'])->name('show');
+        Route::get('/{camera}/edit', [CameraController::class, 'edit'])->name('edit');
+        Route::patch('/{camera}', [CameraController::class, 'update'])->name('update');
+        Route::delete('/{camera}', [CameraController::class, 'destroy'])->name('destroy');
+    });
+
+    // Rutas de cámaras para users
+    Route::middleware(['auth', 'no_cache', 'role:user'])->prefix('user/cameras')->name('user.cameras.')->group(function () {
+        Route::get('/', [CameraController::class, 'index'])->name('index');
+        Route::get('/create', [CameraController::class, 'create'])->name('create');
+        Route::post('/', [CameraController::class, 'store'])->name('store');
+        Route::get('/{camera}', [CameraController::class, 'show'])->name('show');
     });
 });
 
