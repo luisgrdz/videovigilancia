@@ -1,24 +1,48 @@
 @extends('components.layouts.app')
 
-@section('titulo',$camera->name)
+@section('titulo', 'Detalles de cámara')
 
 @section('contenido')
-<div class="bg-white p-6 rounded shadow max-w-xl mx-auto">
+<div class="max-w-2xl mx-auto mt-10">
+    
+    @php
+        $prefix = Request::is('admin*') ? 'admin.' : 'user.';
+    @endphp
 
-    <h1 class="text-2xl font-bold">{{ $camera->name }}</h1>
-
-    <p class="mt-2 text-gray-700"><strong>IP:</strong> {{ $camera->ip }}</p>
-    <p class="mt-1"><strong>Ubicación:</strong> {{ $camera->location }}</p>
-    <p class="mt-1"><strong>Estado:</strong> {{ $camera->status }}</p>
-
-    <div class="flex gap-3 mt-4">
-        <a href="{{ route('cameras.edit', $camera) }}" class="text-blue-600">Editar</a>
-
-        <form action="{{ route('cameras.destroy', $camera) }}" method="POST">
-            @csrf @method('DELETE')
-            <button class="text-red-600">Eliminar</button>
-        </form>
+    <div class="mb-4 flex justify-between">
+        <a href="{{ route($prefix . 'cameras.index') }}" class="text-blue-600 hover:underline text-sm">&larr; Volver al listado</a>
+        <a href="{{ route($prefix . 'cameras.edit', $camera) }}" class="text-yellow-600 hover:underline text-sm font-bold">Editar esta cámara</a>
     </div>
 
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-800">{{ $camera->name }}</h2>
+            <span class="px-3 py-1 text-sm rounded-full {{ $camera->status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                {{ $camera->status ? 'Activa' : 'Inactiva' }}
+            </span>
+        </div>
+        
+        <div class="p-6 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- IP -->
+                <div class="bg-gray-50 p-3 rounded">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">Dirección IP</label>
+                    <p class="mt-1 text-lg font-mono text-gray-900">{{ $camera->ip }}</p>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="bg-gray-50 p-3 rounded">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">Ubicación</label>
+                    <p class="mt-1 text-lg text-gray-900">{{ $camera->location ?? 'No especificada' }}</p>
+                </div>
+            </div>
+
+            <!-- Fechas -->
+            <div class="text-xs text-gray-400 border-t pt-4 mt-4">
+                <p>Registrada el: {{ $camera->created_at->format('d/m/Y H:i') }}</p>
+                <p>Última actualización: {{ $camera->updated_at->format('d/m/Y H:i') }}</p>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

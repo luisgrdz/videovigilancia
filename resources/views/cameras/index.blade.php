@@ -1,58 +1,48 @@
-<h2 class="text-xl font-bold mb-4">Cámaras</h2>
+@extends('components.layouts.app')
 
-@auth
-    @if(auth()->user()->role_id == 1)
-        <a href="{{ route('admin.cameras.create') }}" class="btn mb-4 bg-blue-600 text-white px-3 py-2 rounded">Agregar Cámara</a>
-    @else
-        <a href="{{ route('user.cameras.create') }}" class="btn mb-4 bg-blue-600 text-white px-3 py-2 rounded">Agregar Cámara</a>
-    @endif
-@endauth
+@section('titulo', 'Detalles de cámara')
 
-<table class="table-auto w-full border-collapse border border-gray-300">
-    <thead class="bg-gray-200">
-        <tr>
-            <th class="p-2 border border-gray-300">Nombre</th>
-            <th class="p-2 border border-gray-300">IP</th>
-            <th class="p-2 border border-gray-300">Ubicación</th>
-            <th class="p-2 border border-gray-300">Estado</th>
-            <th class="p-2 border border-gray-300">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($cameras as $camera)
-        <tr class="border-b">
-            <td class="p-2">{{ $camera->name }}</td>
-            <td class="p-2">{{ $camera->ip }}</td>
-            <td class="p-2">{{ $camera->location }}</td>
-            <td class="p-2">
-                <span class="{{ $camera->status ? 'text-green-600' : 'text-red-600' }}">
-                    {{ $camera->status ? 'Activa' : 'Inactiva' }}
-                </span>
-            </td>
-            <td class="p-2 flex gap-2">
-                @if(auth()->user()->role_id == 1)
-                    <a href="{{ route('admin.cameras.show', $camera) }}" class="btn-sm bg-gray-200 px-2 py-1 rounded">Ver</a>
-                    <a href="{{ route('admin.cameras.edit', $camera) }}" class="btn-sm bg-yellow-200 px-2 py-1 rounded">Editar</a>
-                    <form action="{{ route('admin.cameras.destroy', $camera) }}" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn-sm text-red-500 px-2 py-1 rounded">Eliminar</button>
-                    </form>
-                @else
-                    <a href="{{ route('user.cameras.show', $camera) }}" class="btn-sm bg-gray-200 px-2 py-1 rounded">Ver</a>
-                    <a href="{{ route('user.cameras.edit', $camera) }}" class="btn-sm bg-yellow-200 px-2 py-1 rounded">Editar</a>
-                    <form action="{{ route('user.cameras.destroy', $camera) }}" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn-sm text-red-500 px-2 py-1 rounded">Eliminar</button>
-                    </form>
-                @endif
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+@section('contenido')
+<div class="max-w-2xl mx-auto mt-10">
+    
+    @php
+        $prefix = Request::is('admin*') ? 'admin.' : 'user.';
+    @endphp
 
-<div class="mt-4">
-    {{ $cameras->links() }}
+    <div class="mb-4 flex justify-between">
+        <a href="{{ route($prefix . 'cameras.index') }}" class="text-blue-600 hover:underline text-sm">&larr; Volver al listado</a>
+        <a href="{{ route($prefix . 'cameras.edit', $camera) }}" class="text-yellow-600 hover:underline text-sm font-bold">Editar esta cámara</a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-800">{{ $camera->name }}</h2>
+            <span class="px-3 py-1 text-sm rounded-full {{ $camera->status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                {{ $camera->status ? 'Activa' : 'Inactiva' }}
+            </span>
+        </div>
+        
+        <div class="p-6 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- IP -->
+                <div class="bg-gray-50 p-3 rounded">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">Dirección IP</label>
+                    <p class="mt-1 text-lg font-mono text-gray-900">{{ $camera->ip }}</p>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="bg-gray-50 p-3 rounded">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">Ubicación</label>
+                    <p class="mt-1 text-lg text-gray-900">{{ $camera->location ?? 'No especificada' }}</p>
+                </div>
+            </div>
+
+            <!-- Fechas -->
+            <div class="text-xs text-gray-400 border-t pt-4 mt-4">
+                <p>Registrada el: {{ $camera->created_at->format('d/m/Y H:i') }}</p>
+                <p>Última actualización: {{ $camera->updated_at->format('d/m/Y H:i') }}</p>
+            </div>
+        </div>
+    </div>
 </div>
+@endsection

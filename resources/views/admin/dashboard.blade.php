@@ -25,8 +25,8 @@
     <div class="flex flex-col gap-4">
     <a href="{{ route('admin.personal.index') }}" class="btn">Administrar Personal</a>
     <a href="{{ route('admin.personal.create') }}" class="btn">Agregar Personal</a>
-    <a href="{{ route('cameras.index') }}" class="btn">Administrar Cámaras</a>
-    <a href="{{ route('cameras.create') }}" class="btn">Agregar Cámara</a>
+    <a href="{{ route('admin.cameras.index') }}" class="btn">Administrar Cámaras</a>
+    <a href="{{ route('admin.cameras.create') }}" class="btn">Agregar Cámara</a>
 </div>
 
 

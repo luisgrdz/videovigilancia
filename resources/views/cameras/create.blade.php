@@ -5,7 +5,17 @@
 @section('contenido')
 <h1 class="text-xl font-bold mb-4">Registrar cámara</h1>
 
-<form method="POST" action="{{ route('cameras.store') }}" class="bg-white p-6 rounded shadow max-w-md">
+{{-- 
+    SOLUCIÓN: 
+    Detectamos si la URL actual empieza con 'admin'.
+    Si es así, el prefijo es 'admin.', de lo contrario es 'user.'.
+--}}
+@php
+    $prefix = Request::is('admin*') ? 'admin.' : 'user.';
+@endphp
+
+{{-- Usamos la variable $prefix concatenada con el nombre de la ruta --}}
+<form method="POST" action="{{ route($prefix . 'cameras.store') }}" class="bg-white p-6 rounded shadow max-w-md">
     @csrf
 
     <label>Nombre</label>
@@ -19,8 +29,8 @@
 
     <label class="mt-3">Estatus</label>
     <select name="status" class="input">
-        <option value="active">Activa</option>
-        <option value="inactive">Inactiva</option>
+        <option value="1">Activa</option>
+        <option value="0">Inactiva</option>
     </select>
 
     <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded w-full">Registrar</button>

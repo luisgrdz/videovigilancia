@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Camera;
+use Illuminate\Http\Request;
 
 class CameraController extends Controller
 {
@@ -20,22 +20,23 @@ class CameraController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        // 1. Validación
+        $validated = $request->validate([
             'name'     => 'required|string|max:255',
             'ip'       => 'required|ip',
             'location' => 'nullable|string|max:255',
-            'status'   => 'required|boolean',
+            'status'   => 'required|boolean', // Espera 1 o 0
         ]);
 
-        Camera::create([
-            'name'     => $request->name,
-            'ip'       => $request->ip,
-            'location' => $request->location,
-            'status'   => $request->status,
-        ]);
+        // 2. Crear
+        Camera::create($validated);
 
-        return redirect()->route('cameras.index')
-            ->with('success', 'Cámara registrada.');
+        // 3. Redirección Inteligente
+        // Detectamos prefijo para redirigir al index correcto
+        $prefix = $request->is('admin*') ? 'admin.' : 'user.';
+
+        return redirect()->route($prefix . 'cameras.index')
+            ->with('success', 'Cámara registrada correctamente.');
     }
 
     public function show(Camera $camera)
@@ -50,24 +51,32 @@ class CameraController extends Controller
 
     public function update(Request $request, Camera $camera)
     {
-        $request->validate([
+        // 1. Validación
+        $validated = $request->validate([
             'name'     => 'required|string|max:255',
             'ip'       => 'required|ip',
             'location' => 'nullable|string|max:255',
-            'status'   => 'required|in:active,inactive'
+            'status'   => 'required|boolean', // Espera 1 o 0
         ]);
 
-        $camera->update($request->all());
+        // 2. Actualizar
+        $camera->update($validated);
 
-        return redirect()->route('cameras.index')
-            ->with('success', 'Cámara actualizada.');
+        // 3. Redirección Inteligente
+        $prefix = $request->is('admin*') ? 'admin.' : 'user.';
+
+        return redirect()->route($prefix . 'cameras.index')
+            ->with('success', 'Cámara actualizada correctamente.');
     }
 
-    public function destroy(Camera $camera)
+    public function destroy(Request $request, Camera $camera)
     {
         $camera->delete();
 
-        return redirect()->route('cameras.index')
-            ->with('success', 'Cámara eliminada.');
+        // Redirección Inteligente
+        $prefix = $request->is('admin*') ? 'admin.' : 'user.';
+
+        return redirect()->route($prefix . 'cameras.index')
+            ->with('success', 'Cámara eliminada correctamente.');
     }
 }
