@@ -84,7 +84,7 @@
                         Dashboard Admin
                     </a>
                 @else
-                    <a href="{{ route('users.dashboard') }}" class="nav-link-custom">
+                    <a href="{{ route('user.dashboard') }}" class="nav-link-custom">
                         Mi Panel
                     </a>
                 @endif
