@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('status')->default(true);  // Activa / Inactiva
             $table->string('group')->nullable(); // Grupo: Ej. "Recepción", "Oficinas principales"
             $table->timestamps();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
         });
     }
 

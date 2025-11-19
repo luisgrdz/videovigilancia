@@ -23,4 +23,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+    
+    public function cameras()
+    {
+        return $this->hasMany(Camera::class);
+    }
 }

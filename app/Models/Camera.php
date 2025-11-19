@@ -10,6 +10,12 @@ class Camera extends Model
         'name',
         'ip',
         'location',
-        'status'
+        'status',
+        'group',
+        'user_id'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -7,9 +7,7 @@ use Closure;
 
 class Authenticate extends Middleware
 {
-    /**
-     * Redirige al login si no está autenticado.
-     */
+   
     protected function redirectTo($request): ?string
     {
         if (!$request->expectsJson()) {
@@ -20,7 +18,7 @@ class Authenticate extends Middleware
     }
 
     /**
-     * Evitar que las páginas se almacenen en caché (no permitir retroceder).
+     * Evitar que paginas se almacenen en cache (no permitir retroceder)
      */
     public function handle($request, Closure $next, ...$guards)
     {
