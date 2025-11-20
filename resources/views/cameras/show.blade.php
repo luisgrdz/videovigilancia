@@ -11,7 +11,7 @@
 
     <div class="mb-4 flex justify-between">
         <a href="{{ route($prefix . 'cameras.index') }}" class="text-blue-600 hover:underline text-sm">&larr; Volver al listado</a>
-        <a href="{{ route($prefix . 'cameras.edit', $camera) }}" class="text-yellow-600 hover:underline text-sm font-bold">Editar esta cámara</a>
+        <a href="{{ route($prefix . 'cameras.edit', $camera)  }}" class="text-yellow-600 hover:underline text-sm font-bold">Editar esta cámara</a>
     </div>
 
     <div class="bg-white rounded-lg shadow-lg overflow-hidden">
