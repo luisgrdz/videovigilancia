@@ -33,29 +33,29 @@ class CameraController extends Controller
         return view('cameras.create');
     }
 
-    public function store(Request $request)
-    {
-        // 1. Validación (Agregando 'group')
-        $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'ip'       => 'required|ip',
-            'location' => 'nullable|string|max:255',
-            'status'   => 'required|boolean',
-            'group'    => 'nullable|string|max:255',
-        ]);
+public function store(Request $request)
+{
+    // 1. Validación (CAMBIAMOS 'ip' => 'required|ip' POR 'required|string')
+    $validated = $request->validate([
+        'name'     => 'required|string|max:255',
+        'ip'       => 'required|string', // <--- CAMBIO AQUÍ: Ahora acepta URLs completas
+        'location' => 'nullable|string|max:255',
+        'status'   => 'required|boolean',
+        'group'    => 'nullable|string|max:255',
+    ]);
 
-        // 2. Crear y asignar el ID del usuario actual
-        Camera::create([
-            ...$validated,
-            'user_id' => Auth::id(), // Usamos Auth::id()
-        ]);
+    // 2. Crear y asignar el ID del usuario actual
+    Camera::create([
+        ...$validated,
+        'user_id' => Auth::id(),
+    ]);
 
-        // 3. Redirección Inteligente
-        $prefix = $request->is('admin*') ? 'admin.' : 'user.';
+    // 3. Redirección Inteligente
+    $prefix = $request->is('admin*') ? 'admin.' : 'user.';
 
-        return redirect()->route($prefix . 'cameras.index')
-            ->with('success', 'Cámara registrada correctamente.');
-    }
+    return redirect()->route($prefix . 'cameras.index')
+        ->with('success', 'Cámara registrada correctamente.');
+}
 
     public function show(Camera $camera)
     {
