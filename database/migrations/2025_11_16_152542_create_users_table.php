@@ -13,11 +13,22 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('name');
+            $table->string('email')->unique();
+            
+            // --- LÍNEAS NUEVAS NECESARIAS ---
+            $table->timestamp('email_verified_at')->nullable(); // Para verificar email
             $table->string('password');
-            $table->string('email')->unique();});
-
+            $table->rememberToken(); // Para "Recordarme"
+            
+            // Para Autenticación de Dos Factores (tu Factory lo está pidiendo)
+            $table->text('two_factor_secret')->nullable();
+            $table->text('two_factor_recovery_codes')->nullable();
+            $table->timestamp('two_factor_confirmed_at')->nullable();
+            // --------------------------------
+            
+            $table->timestamps();
+        });
     }
 
     /**
