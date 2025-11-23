@@ -5,9 +5,9 @@
 @section('contenido')
 
     <div class="max-w-2xl mx-auto">
-        
 
         {{-- Botón Volver --}}
+        
         <div class="mb-6">
             @php
                 $prefix = Request::is('admin*') ? 'admin.' : 'user.';
