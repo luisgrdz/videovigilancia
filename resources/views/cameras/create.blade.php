@@ -5,6 +5,7 @@
 @section('contenido')
 
     <div class="max-w-2xl mx-auto">
+        
 
         {{-- Botón Volver --}}
         <div class="mb-6">
