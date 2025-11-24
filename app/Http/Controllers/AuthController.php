@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -75,7 +76,18 @@ class AuthController extends Controller
     public function updatePassword(Request $request)
     {
         $request->validate([
-            'password' => 'required|min:6|confirmed',
+            'password' => [
+                'required',
+                'confirmed',
+                // Aumenta el mínimo a 12
+                Password::min(12)
+                    // Requiere al menos una letra mayúscula
+                    ->mixedCase()
+                    // Requiere al menos un número
+                    ->numbers()
+                    // Requiere al menos un símbolo (carácter especial)
+                    ->symbols(),
+            ],
         ]);
 
         $user = Auth::user();

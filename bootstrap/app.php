@@ -12,8 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'role' => \App\Http\Middleware\CheckRole::class,
-        'no_cache' => \App\Http\Middleware\NoCache::class,
+        // ... otros aliases ...
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        // AÑADA ESTA LÍNEA
+        'role' => \App\Http\Middleware\CheckRole::class,
+        'no_cache' => \App\Http\Middleware\NoCache::class
 
     ]);
     })
