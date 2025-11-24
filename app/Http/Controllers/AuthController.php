@@ -21,16 +21,36 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+
+            // 1. Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // 2. Verificar si el usuario está inactivo (status = false)
+            if (!$user->status) {
+                // 3. Desloguear al usuario inmediatamente
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                // 4. Redirigir con mensaje de error
+                return back()->withErrors([
+                    // Mensaje de notificación solicitado por el usuario
+                    'email' => 'Su cuenta está inactiva. Comuníquese con el administrador para solicitar acceso.',
+                ])->onlyInput('email');
+            }
+
+            // Si el status es true, proceder con el inicio de sesión normal
             $request->session()->regenerate();
 
             // Redirigir según rol
-            if (Auth::user()->role_id == 1) {
+            if ($user->role_id == 1) {
                 return redirect()->route('admin.dashboard');
             }
 
             return redirect()->route('user.dashboard');
         }
 
+        // Si Auth::attempt() falla (credenciales incorrectas)
         return back()->withErrors([
             'email' => 'Credenciales incorrectas.',
         ]);
