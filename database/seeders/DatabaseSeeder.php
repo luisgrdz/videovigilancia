@@ -2,24 +2,47 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // 1. PRIMERO: Ejecutamos el semillero de Roles para que existan los ID 1 y 2
+        // Ejecutar RolesSeeder primero
         $this->call(RolesSeeder::class);
 
-        // 2. DESPUÉS: Ya podemos crear el usuario, porque el rol #2 ya existe
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            // El role_id se asignará automáticamente como 2 gracias a tu migración
+        $testPassword = 'password';
+
+        // 1. ADMIN
+        User::create([
+            'name' => 'Luis Macias',
+            'email' => 'admin@example.com',
+            'password' => Hash::make($testPassword),
+            'role_id' => 1, // Asegura que este ID exista en RolesSeeder
+            'status' => true,
         ]);
+
+        // 2. SUPERVISOR
+        User::create([
+            'name' => 'Supervisor Prueba',
+            'email' => 'supervisor@example.com',
+            'password' => Hash::make($testPassword),
+            'role_id' => 3,
+            'status' => true,
+        ]);
+
+        // 3. USER
+        User::create([
+            'name' => 'Usuario Prueba',
+            'email' => 'user@example.com',
+            'password' => Hash::make($testPassword),
+            'role_id' => 2,
+            'status' => true,
+        ]);
+
+        Log::info("Usuarios creados. Pass: 'password'");
     }
 }

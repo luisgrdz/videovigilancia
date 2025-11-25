@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\CameraController;
+use App\Http\Controllers\SupervisorController;
 
 
 Route::view('/', 'index')->name('index');
@@ -39,19 +40,36 @@ Route::middleware(['auth', 'no_cache', 'role:admin'])
         Route::resource('cameras', CameraController::class);
     });
 
-Route::middleware(['auth', 'no_cache', 'role:user'])
-    ->prefix('user')      
-    ->name('user.')         
-    ->group(function () {
-
-        // Dashboard User (Ruta: user.dashboard)
-        Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
     
-        Route::prefix('cameras')->name('cameras.')->group(function () {
-            Route::get('/', [CameraController::class, 'index'])->name('index');
-            Route::get('/create', [CameraController::class, 'create'])->name('create');
-            Route::get('/{camera}/edit', [CameraController::class, 'edit'])->name('edit');
-            Route::post('/', [CameraController::class, 'store'])->name('store');
-            Route::get('/{camera}', [CameraController::class, 'show'])->name('show');
+    Route::middleware(['auth', 'no_cache', 'role:user'])
+        ->prefix('user')      
+        ->name('user.')         
+        ->group(function () {
+    
+            // Dashboard User (Ruta: user.dashboard)
+            Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+        
+            Route::prefix('cameras')->name('cameras.')->group(function () {
+                Route::get('/', [CameraController::class, 'index'])->name('index');
+                Route::get('/create', [CameraController::class, 'create'])->name('create');
+                Route::get('/{camera}/edit', [CameraController::class, 'edit'])->name('edit');
+                Route::post('/', [CameraController::class, 'store'])->name('store');
+                Route::get('/{camera}', [CameraController::class, 'show'])->name('show');
+            });
         });
-    });
+    Route::middleware(['auth', 'no_cache', 'role:supervisor'])
+        ->prefix('supervisor')      
+        ->name('supervisor.')         
+        ->group(function () {
+    
+            // Dashboard User (Ruta: user.dashboard)
+            Route::get('/dashboard', [SupervisorController::class, 'dashboard'])->name('dashboard');
+        
+            Route::prefix('cameras')->name('cameras.')->group(function () {
+                Route::get('/', [CameraController::class, 'index'])->name('index');
+                Route::get('/create', [CameraController::class, 'create'])->name('create');
+                Route::get('/{camera}/edit', [CameraController::class, 'edit'])->name('edit');
+                Route::post('/', [CameraController::class, 'store'])->name('store');
+                Route::get('/{camera}', [CameraController::class, 'show'])->name('show');
+            });
+        });

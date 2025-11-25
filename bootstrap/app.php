@@ -16,7 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // AÑADA ESTA LÍNEA
         'role' => \App\Http\Middleware\CheckRole::class,
-        'no_cache' => \App\Http\Middleware\NoCache::class
+        'no_cache' => \App\Http\Middleware\NoCache::class,
+        'checkRole' => \App\Http\Middleware\CheckRole::class
 
     ]);
     })

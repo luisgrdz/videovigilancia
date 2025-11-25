@@ -9,40 +9,40 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        // 1. Verificar si el usuario está autenticado
+        // 1. Verificar Login
         if (!Auth::check()) {
-            return redirect('/login'); // O la ruta de login de su aplicación
+            return redirect('login');
         }
 
         $user = Auth::user();
 
-        // 2. Comprobar si el role_id del usuario está en la lista de roles permitidos
-        // NOTA: Los $roles son los argumentos que se pasan desde la ruta, ej: 'admin'
-        // Asumiendo que el Role ID 1 es 'admin', y 2 es 'user' (por su migración)
+        // 2. Cargar relación Role si falta
+        if (!$user->relationLoaded('role')) {
+            $user->load('role');
+        }
 
-        // Mapeo simple de roles a IDs (Role ID 1 = Admin)
-        $roleMapping = [
-            'admin' => 1,
-            'user'  => 2,
-        ];
+        // 3. Validación de seguridad: ¿El usuario tiene rol asignado?
+        if (!$user->role) {
+            Auth::logout();
+            return abort(403, 'Error crítico: El usuario no tiene un rol asignado en la base de datos.');
+        }
+
+        // 4. Normalizar datos (Minúsculas y sin espacios extra)
+        // Ejemplo: " Admin " -> "admin"
+        $userRoleName = strtolower(trim($user->role->name));
 
         foreach ($roles as $role) {
-            $roleId = $roleMapping[$role] ?? null;
-
-            if ($roleId && $user->role_id == $roleId) {
-                // Si el usuario tiene el rol requerido, permitir acceso
+            if ($userRoleName === strtolower(trim($role))) {
                 return $next($request);
             }
         }
 
-        // Si no tiene el rol, redirigir o abortar
-        return abort(403, 'Acceso no autorizado: No tiene permiso para acceder a esta sección.');
+        // 5. Si falló la validación, mostramos QUÉ falló para depurar
+        // Esto te dirá en pantalla: "Tu rol es: admin. Se requiere: supervisor"
+        $requiredRoles = implode(', ', $roles);
+
+        return abort(403, "Acceso denegado. Tu rol actual es: '{$userRoleName}'. Esta sección requiere uno de estos roles: '{$requiredRoles}'.");
     }
 }

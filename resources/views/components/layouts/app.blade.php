@@ -105,12 +105,14 @@
                 @auth
                 <div class="flex items-center gap-4 sm:gap-6">
                     
-                    <!-- Enlaces condicionales -->
-                    @if(Request::is('admin*'))
-                        <a href="{{ route('admin.dashboard') }}" class="nav-link-custom hidden sm:block">Inico</a>
-                    @else
-                        <a href="{{ route('user.dashboard') }}" class="nav-link-custom hidden sm:block">Inicio</a>
-                    @endif
+                   <!-- Enlaces condicionales -->
+@if(Request::is('admin*'))
+    <a href="{{ route('admin.dashboard') }}" class="nav-link-custom hidden sm:block">Inicio</a>
+@elseif(Request::is('supervisor*'))
+    <a href="{{ route('supervisor.dashboard') }}" class="nav-link-custom hidden sm:block">Inicio</a>
+@else
+    <a href="{{ route('user.dashboard') }}" class="nav-link-custom hidden sm:block">Inicio</a>
+@endif
 
                     <div class="h-6 w-px bg-gray-300 hidden sm:block"></div>
 

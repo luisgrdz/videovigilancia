@@ -23,35 +23,36 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
 
-            // 1. Obtener el usuario autenticado
             $user = Auth::user();
 
-            // 2. Verificar si el usuario está inactivo (status = false)
+            // 1. Verificar estatus
             if (!$user->status) {
-                // 3. Desloguear al usuario inmediatamente
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
 
-                // 4. Redirigir con mensaje de error
                 return back()->withErrors([
-                    // Mensaje de notificación solicitado por el usuario
-                    'email' => 'Su cuenta está inactiva. Comuníquese con el administrador para solicitar acceso.',
+                    'email' => 'Su cuenta está inactiva. Comuníquese con el administrador.',
                 ])->onlyInput('email');
             }
 
-            // Si el status es true, proceder con el inicio de sesión normal
             $request->session()->regenerate();
 
-            // Redirigir según rol
-            if ($user->role_id == 1) {
-                return redirect()->route('admin.dashboard');
-            }
+            // 2. REDIRECCIÓN POR ROL (Aquí estaba el error lógico)
+            // Usamos switch para manejar los 3 casos definidos en tus rutas
+            switch ($user->role_id) {
+                case 1: // Admin
+                    return redirect()->intended(route('admin.dashboard'));
 
-            return redirect()->route('user.dashboard');
+                case 3: // Supervisor (Rol ID 3 según tu Seeder)
+                    return redirect()->intended(route('supervisor.dashboard'));
+
+                case 2: // User
+                default:
+                    return redirect()->intended(route('user.dashboard'));
+            }
         }
 
-        // Si Auth::attempt() falla (credenciales incorrectas)
         return back()->withErrors([
             'email' => 'Credenciales incorrectas.',
         ]);
