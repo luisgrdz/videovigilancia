@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
@@ -8,7 +8,6 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-   
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -16,13 +15,11 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-        
             background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #e0e7ff 100%);
             min-height: 100vh;
             color: #4b5563;
         }
 
-       
         .glass-panel {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(12px);
@@ -47,9 +44,10 @@
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             transition: all 0.3s ease;
+            text-decoration: none;
         }
 
-        .nav-link-custom:hover {
+        .nav-link-custom:hover, .nav-link-custom.active {
             color: #4f46e5; /* Indigo 600 */
             background: rgba(255, 255, 255, 0.6);
             transform: translateY(-1px);
@@ -64,6 +62,8 @@
             border-radius: 9999px;
             box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
             transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-gradient:hover {
@@ -72,7 +72,6 @@
             filter: brightness(1.05);
         }
 
-       
         main {
             animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
@@ -105,21 +104,53 @@
                 @auth
                 <div class="flex items-center gap-4 sm:gap-6">
                     
-                   <!-- Enlaces condicionales -->
-@if(Request::is('admin*'))
-    <a href="{{ route('admin.dashboard') }}" class="nav-link-custom hidden sm:block">Inicio</a>
-@elseif(Request::is('supervisor*'))
-    <a href="{{ route('supervisor.dashboard') }}" class="nav-link-custom hidden sm:block">Inicio</a>
-@else
-    <a href="{{ route('user.dashboard') }}" class="nav-link-custom hidden sm:block">Inicio</a>
-@endif
+                    {{-- LÓGICA DE RUTAS SEGÚN ROL --}}
+                    @php
+                        $userRole = Auth::user()->role->name ?? 'user';
+                        
+                        $dashboardRoute = match($userRole) {
+                            'admin' => route('admin.dashboard'),
+                            'supervisor' => route('supervisor.dashboard'),
+                            'mantenimiento' => route('mantenimiento.dashboard'),
+                            default => route('user.dashboard'),
+                        };
+
+                        $camerasRoute = match($userRole) {
+                            'admin' => route('admin.cameras.index'),
+                            'supervisor' => route('supervisor.cameras.index'),
+                            'mantenimiento' => route('mantenimiento.cameras.index'),
+                            default => route('user.cameras.index'),
+                        };
+                    @endphp
+
+                    <!-- Enlace Inicio -->
+                    <a href="{{ $dashboardRoute }}" class="nav-link-custom hidden sm:block {{ request()->routeIs('*.dashboard') ? 'active' : '' }}">
+                        Inicio
+                    </a>
+
+                    <!-- Enlace Cámaras -->
+                    <a href="{{ $camerasRoute }}" class="nav-link-custom hidden sm:block {{ request()->routeIs('*.cameras.*') ? 'active' : '' }}">
+                        Cámaras
+                    </a>
+
+                    <!-- Enlace Personal (Solo Admin) -->
+                    @if($userRole === 'admin')
+                        <a href="{{ route('admin.personal.index') }}" class="nav-link-custom hidden sm:block {{ request()->routeIs('admin.personal.*') ? 'active' : '' }}">
+                            Personal
+                        </a>
+                    @endif
 
                     <div class="h-6 w-px bg-gray-300 hidden sm:block"></div>
 
                     <div class="flex items-center gap-3">
-                        <span class="text-sm font-medium text-gray-600 hidden sm:block">
-                            {{ Auth::user()->name }}
-                        </span>
+                        <div class="text-right hidden sm:block leading-tight">
+                            <span class="block text-sm font-medium text-gray-700">
+                                {{ Auth::user()->name }}
+                            </span>
+                            <span class="block text-[10px] text-gray-500 uppercase font-bold tracking-wide">
+                                {{ $userRole }}
+                            </span>
+                        </div>
                         
                         <!-- BOTÓN CERRAR SESIÓN -->
                         <form action="{{ route('logout') }}" method="POST">
@@ -139,9 +170,14 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         
         @if(session('success'))
-            <div class="mb-6 glass-panel border-l-4 border-green-500 text-green-700 px-4 py-3 rounded-r relative" role="alert">
-                <strong class="font-bold">¡Éxito!</strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
+            <div class="mb-6 glass-panel border-l-4 border-green-500 text-green-700 px-4 py-3 rounded-r relative flex items-center gap-3" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                    <strong class="font-bold">¡Éxito!</strong>
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
             </div>
         @endif
 

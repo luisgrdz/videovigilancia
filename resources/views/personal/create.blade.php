@@ -90,6 +90,25 @@
                         </div>
                         <p class="text-xs text-gray-400 mt-2 ml-1">Se recomienda usar al menos 8 caracteres.</p>
                     </div>
+                    <div class="mb-4">
+    <label class="block text-sm font-semibold text-gray-700 mb-2">Rol del Usuario</label>
+    <select name="role_id" id="role_id" class="w-full p-3 rounded-xl bg-gray-50 border border-gray-200" onchange="toggleSupervisor(this.value)">
+        @foreach($roles as $role)
+            <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
+        @endforeach
+    </select>
+</div>
+
+<div class="mb-4" id="div_supervisor">
+    <label class="block text-sm font-semibold text-gray-700 mb-2">Asignar Supervisor</label>
+    <select name="supervisor_id" class="w-full p-3 rounded-xl bg-gray-50 border border-gray-200">
+        <option value="">-- Sin Supervisor --</option>
+        @foreach($supervisors as $sup)
+            <option value="{{ $sup->id }}">{{ $sup->name }}</option>
+        @endforeach
+    </select>
+    <p class="text-xs text-gray-500 mt-1">El supervisor seleccionado podrá ver las cámaras de este usuario.</p>
+</div>
 
                     <!-- Botón Submit -->
                     <div class="pt-4">

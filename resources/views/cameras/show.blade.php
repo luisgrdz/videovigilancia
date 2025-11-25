@@ -6,25 +6,48 @@
 <div class="max-w-6xl mx-auto mt-6">
 
     @php
-        $prefix = Request::is('admin*') ? 'admin.' : 'user.';
+        $userRole = Auth::user()->role->name ?? 'user';
+        
+        // Definir prefijo de ruta para los botones de acción
+        $prefix = match($userRole) {
+            'admin' => 'admin.',
+            'supervisor' => 'supervisor.',
+            'mantenimiento' => 'mantenimiento.',
+            default => 'user.',
+        };
         
         // --- LÓGICA INTELIGENTE PARA LA URL ---
         $ip = trim($camera->ip);
         
-        // Caso 1: Si el usuario escribió una URL completa (ej: http://192.168.1.50:8080/video)
         if (str_starts_with($ip, 'http')) {
             $streamUrl = $ip;
         } 
-        // Caso 2: Si solo puso la IP y es la app "IP Webcam" (puerto 8080 por defecto)
-        // Intenta adivinar que es un celular si usas el puerto 8080
         elseif (str_contains($ip, ':8080')) {
             $streamUrl = "http://{$ip}/video";
         }
-        // Caso 3: Asumimos que es una ESP32 estándar (puerto 81) si no se especifica nada más
         else {
             $streamUrl = "http://{$ip}:81/stream";
         }
     @endphp
+
+    {{-- Lógica para ocultar video a Mantenimiento --}}
+    @if($userRole === 'mantenimiento')
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-r shadow-sm">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-yellow-700">
+                        <strong class="font-bold">Modo Mantenimiento:</strong> 
+                        Tienes permisos para editar la configuración técnica, pero el acceso al video en vivo está restringido por políticas de seguridad.
+                    </p>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
@@ -34,30 +57,53 @@
                     {{ $camera->status ? 'EN LÍNEA' : 'OFFLINE' }}
                 </span>
             </h1>
-            <p class="text-gray-500 text-sm mt-1">
-                {{ $camera->location ?? 'Ubicación no definida' }} • 
-                <span class="font-mono bg-gray-100 px-1 rounded">{{ $camera->ip }}</span>
+            <p class="text-gray-500 text-sm mt-1 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                {{ $camera->location ?? 'Ubicación no definida' }} 
+                <span class="text-gray-300">|</span>
+                <span class="font-mono bg-gray-100 px-1 rounded text-gray-600 border border-gray-200">{{ $camera->ip }}</span>
             </p>
         </div>
 
         <div class="flex gap-3">
-            <a href="{{ route($prefix . 'cameras.index') }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors shadow-sm">
-                &larr; Volver
-            </a>
-            <a href="{{ route($prefix . 'cameras.edit', $camera) }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium shadow-md transition-all flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+            {{-- BOTÓN VOLVER UNIVERSAL --}}
+            <a href="{{ route($prefix . 'cameras.index') }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors shadow-sm flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Configurar
+                Volver
             </a>
+
+            {{-- BOTÓN CONFIGURAR (Solo Admin y Mantenimiento) --}}
+            @if($userRole === 'admin' || $userRole === 'mantenimiento')
+                <a href="{{ route($prefix . 'cameras.edit', $camera) }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium shadow-md transition-all flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                    Configurar
+                </a>
+            @endif
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         <div class="lg:col-span-2 space-y-4">
-            <div class="bg-black rounded-xl overflow-hidden shadow-2xl border-4 border-gray-800 relative group aspect-video">
-                @if($camera->status)
+            {{-- CONTENEDOR DE VIDEO --}}
+            <div class="bg-black rounded-xl overflow-hidden shadow-2xl border-4 border-gray-800 relative group aspect-video flex items-center justify-center">
+                @if($userRole === 'mantenimiento')
+                    {{-- Placeholder para Mantenimiento --}}
+                    <div class="text-center p-10">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                        </svg>
+                        <h3 class="text-gray-400 font-medium text-lg">Vista previa deshabilitada</h3>
+                        <p class="text-gray-600 text-sm mt-2">Tu rol no tiene permisos de visualización en vivo.</p>
+                    </div>
+                @elseif($camera->status)
                     <img 
                         src="{{ $streamUrl }}" 
                         class="w-full h-full object-contain bg-black"

@@ -11,29 +11,48 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     public function run()
     {
-        // Permisos generales
+        // 1. Definir Permisos Granulares
         $permissions = [
-            'view_live',
-            'view_recordings',
-            'download_video',
-            'manage_cameras',
-            'manage_users',
+            'view_live',        // Ver transmisión en vivo
+            'view_recordings',  // Ver grabaciones
+            'manage_cameras',   // Crear, Editar, Eliminar cámaras
+            'assign_cameras',   // Asignar cámaras a otros usuarios (Admin)
+            'manage_users',     // Crear/Editar usuarios
             'view_audit_logs',
-            'export_evidence',
         ];
 
         foreach ($permissions as $perm) {
             Permission::firstOrCreate(['name' => $perm]);
         }
 
-        // Roles y sus permisos
+        // 2. Definir Roles y sus Permisos
         $roles = [
-            'superadmin' => $permissions, // todos
-            'admin' => ['view_live', 'view_recordings', 'download_video', 'manage_cameras', 'manage_users'],
-            'operator' => ['view_live', 'view_recordings'],
-            'analyst' => ['view_recordings', 'export_evidence'],
-            'auditor' => ['view_audit_logs'],
-            'guest' => ['view_live']
+            'superadmin' => $permissions, // Acceso total
+
+            'admin' => [
+                'view_live',
+                'view_recordings',
+                'manage_cameras',
+                'assign_cameras', // Admin puede asignar cámaras a usuarios
+                'manage_users'
+            ],
+
+            'supervisor' => [
+                'view_live',
+                'view_recordings'
+                // El supervisor NO edita cámaras, solo ve las de su grupo
+            ],
+
+            'mantenimiento' => [
+                'manage_cameras'
+                // Puede crear/editar cámaras, pero NO tiene 'view_live' ni 'view_recordings'
+            ],
+
+            'user' => [
+                'view_live',
+                'view_recordings'
+                // Solo ve las suyas (validado en Controller)
+            ],
         ];
 
         foreach ($roles as $role => $perms) {
@@ -42,3 +61,4 @@ class RolesAndPermissionsSeeder extends Seeder
         }
     }
 }
+

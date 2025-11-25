@@ -4,37 +4,35 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Role;
-use Illuminate\Support\Facades\Schema; // Importante: Importar Schema
 
 class RolesSeeder extends Seeder
 {
-    public function run()
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
     {
-        // Desactivamos la revisión de llaves foráneas para permitir el truncate
-        Schema::disableForeignKeyConstraints();
+        $roles = [
+            [
+                'name' => 'admin',
+                'description' => 'Administrador total del sistema'
+            ],
+            [
+                'name' => 'user',
+                'description' => 'Usuario estándar con acceso a sus cámaras'
+            ],
+            [
+                'name' => 'supervisor',
+                'description' => 'Supervisor de grupo de usuarios'
+            ],
+            [
+                'name' => 'mantenimiento',
+                'description' => 'Técnico encargado de hardware y configuración'
+            ],
+        ];
 
-        // Ahora sí podemos limpiar la tabla sin error 1701
-        Role::truncate();
-
-        // Volvemos a activar la revisión por seguridad
-        Schema::enableForeignKeyConstraints();
-
-        // 1: Administrador (Máximo control)
-        Role::create([
-            'id' => 1,
-            'name' => 'Admin'
-        ]);
-
-        // 2: Usuario regular (Visualización básica)
-        Role::create([
-            'id' => 2,
-            'name' => 'User'
-        ]);
-
-        // 3: Supervisor (Control intermedio)
-        Role::create([
-            'id' => 3,
-            'name' => 'Supervisor'
-        ]);
+        foreach ($roles as $role) {
+            Role::firstOrCreate(['name' => $role['name']], $role);
+        }
     }
 }

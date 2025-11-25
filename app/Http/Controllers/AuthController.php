@@ -9,6 +9,7 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+
     public function showLogin()
     {
         return view('auth.login');
@@ -38,16 +39,22 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
 
-            // 2. REDIRECCIÓN POR ROL (Aquí estaba el error lógico)
-            // Usamos switch para manejar los 3 casos definidos en tus rutas
-            switch ($user->role_id) {
-                case 1: // Admin
+            // 2. REDIRECCIÓN INTELIGENTE POR NOMBRE DE ROL
+            // Usamos el nombre del rol para evitar confusiones con los IDs
+            $roleName = $user->role->name ?? 'user';
+
+            switch ($roleName) {
+                case 'admin':
                     return redirect()->intended(route('admin.dashboard'));
 
-                case 3: // Supervisor (Rol ID 3 según tu Seeder)
+                case 'supervisor':
                     return redirect()->intended(route('supervisor.dashboard'));
 
-                case 2: // User
+                case 'mantenimiento':
+                    // Redirige al nuevo dashboard de mantenimiento
+                    return redirect()->intended(route('mantenimiento.dashboard'));
+
+                case 'user':
                 default:
                     return redirect()->intended(route('user.dashboard'));
             }
@@ -65,6 +72,11 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
+    }
+    
+    public function showLoginForm()
+    {
+        return view('auth.login');
     }
 
 
@@ -96,10 +108,6 @@ class AuthController extends Controller
         $user->save();
 
         return back()->with('success', 'Contraseña actualizada correctamente');
-    }
-    public function showLoginForm()
-    {
-        return view('auth.login');
     }
 }
 
