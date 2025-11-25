@@ -75,8 +75,21 @@
     <!-- Tarjeta de Login -->
     <div class="relative w-full max-w-md px-6">
         
-        <div class="glass-card rounded-3xl p-8 sm:p-10 fade-up relative">
+        <div class="glass-card rounded-3xl p-8 sm:p-10 fade-up relative overflow-hidden">
             
+            <!-- ========================================== -->
+            <!-- NUEVO: Overlay de Carga (Oculto por defecto) -->
+            <!-- ========================================== -->
+            <div id="loading-overlay" class="hidden absolute inset-0 bg-white/60 backdrop-blur-sm z-50 flex flex-col justify-center items-center transition-all duration-300">
+                <div class="relative">
+                    <!-- Spinner animado -->
+                    <div class="w-16 h-16 border-4 border-indigo-200 border-dashed rounded-full animate-spin"></div>
+                    <div class="absolute top-0 left-0 w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+                <h2 class="mt-4 text-lg font-semibold text-indigo-700 animate-pulse">Accediendo...</h2>
+            </div>
+            <!-- ========================================== -->
+
             <!-- Botón Volver al Inicio -->
             <a href="{{ route('index') }}" class="absolute top-6 left-6 group flex items-center gap-2 px-4 py-2 bg-white/50 hover:bg-white/80 text-indigo-600 text-sm font-semibold rounded-full shadow-sm border border-indigo-100 hover:shadow-md transition-all duration-300 backdrop-blur-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-hover:-translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -100,8 +113,8 @@
                 </div>
             @endif
 
-            <!-- Formulario -->
-            <form action="{{ route('login.post') }}" method="POST">
+            <!-- Formulario (Se agregó ID para JS) -->
+            <form id="login-form" action="{{ route('login.post') }}" method="POST">
                 @csrf
 
                 <!-- Email -->
@@ -153,6 +166,23 @@
 
         </div>
     </div>
+
+    <!-- Script para manejar la animación de carga -->
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            // Validamos muy básicamente que los campos no estén vacíos para no activar la carga por error
+            // (El atributo 'required' de HTML5 ya hace la mayor parte del trabajo)
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if(email && password) {
+                // Mostramos el overlay quitando la clase 'hidden'
+                const loader = document.getElementById('loading-overlay');
+                loader.classList.remove('hidden');
+                loader.classList.add('flex'); // Aseguramos que use flexbox para centrar
+            }
+        });
+    </script>
 
 </body>
 </html>

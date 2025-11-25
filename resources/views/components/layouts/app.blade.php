@@ -85,6 +85,19 @@
 
 <body>
 
+    <!-- ========================================== -->
+    <!-- NUEVO: Overlay de Carga Logout (Oculto) -->
+    <!-- ========================================== -->
+    <div id="logout-overlay" class="fixed inset-0 bg-white/60 backdrop-blur-sm z-[100] hidden flex-col justify-center items-center transition-all duration-300">
+        <div class="relative">
+            <!-- Spinner animado -->
+            <div class="w-16 h-16 border-4 border-indigo-200 border-dashed rounded-full animate-spin"></div>
+            <div class="absolute top-0 left-0 w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <h2 class="mt-4 text-lg font-semibold text-indigo-700 animate-pulse">Cerrando sesión...</h2>
+    </div>
+    <!-- ========================================== -->
+
     <!-- NAV -->
     <nav class="nav-glass shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -153,9 +166,10 @@
                         </div>
                         
                         <!-- BOTÓN CERRAR SESIÓN -->
-                        <form action="{{ route('logout') }}" method="POST">
+                        <!-- Se agregó ID id="logout-form" -->
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button class="btn-gradient text-sm">
+                            <button type="submit" class="btn-gradient text-sm">
                                 Salir
                             </button>
                         </form>
@@ -183,6 +197,26 @@
 
         @yield('contenido')
     </main>
+
+    <!-- Script para manejar la animación de Logout -->
+    <script>
+        const logoutForm = document.getElementById('logout-form');
+        if(logoutForm) {
+            logoutForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // Evita el envío inmediato
+                
+                // Muestra el overlay
+                const overlay = document.getElementById('logout-overlay');
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+
+                // Espera pequeña para que la animación se renderice bien antes de enviar
+                setTimeout(() => {
+                    this.submit(); // Envía el formulario
+                }, 300); // 300ms de retardo para apreciar la animación
+            });
+        }
+    </script>
 
 </body>
 </html>
