@@ -48,39 +48,22 @@ class CameraController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'ip'       => 'required|string',
+            'name' => 'required|string|max:255',
+            // CAMBIO CRÍTICO: 'string' para aceptar YouTube y URLs largas
+            'ip' => 'required|string',
             'location' => 'nullable|string|max:255',
-            'status'   => 'required|boolean',
-            'group'    => 'nullable|string|max:255',
-            'user_id'  => 'nullable|exists:users,id'
+            'status' => 'required|boolean',
+            'group' => 'nullable|string|max:255',
         ]);
-
-        $userRole = Auth::user()->role->name;
-        $ownerId = Auth::id();
-
-        // Si es Admin o Mantenimiento y seleccionó un usuario, asignamos ese dueño
-        if (($userRole === 'admin' || $userRole === 'mantenimiento') && !empty($request->user_id)) {
-            $ownerId = $request->user_id;
-        }
 
         Camera::create([
             ...$validated,
-            'user_id' => $ownerId,
+            'user_id' => Auth::id(),
         ]);
 
-        // Redirección dinámica
-        $prefix = match ($userRole) {
-            'admin' => 'admin.',
-            'supervisor' => 'supervisor.',
-            'mantenimiento' => 'mantenimiento.',
-            default => 'user.',
-        };
-
-        return redirect()->route($prefix . 'cameras.index')
-            ->with('success', 'Cámara registrada correctamente.');
+        $prefix = $request->is('admin*') ? 'admin.' : 'user.';
+        return redirect()->route($prefix . 'cameras.index')->with('success', 'Cámara registrada correctamente.');
     }
-
     public function show(Camera $camera)
     {
         return view('cameras.show', compact('camera'));
@@ -98,38 +81,25 @@ class CameraController extends Controller
 
     public function update(Request $request, Camera $camera)
     {
-        $user = Auth::user();
-        $userRole = $user->role->name;
+        $currentUser = Auth::user();
 
-        // Permisos para editar
-        if ($userRole !== 'admin' && $userRole !== 'mantenimiento' && $camera->user_id !== $user->id) {
-            abort(403, 'No autorizado');
+        if ($currentUser->role?->name !== 'admin' && $camera->user_id !== $currentUser->id) {
+            abort(403, 'No tienes permiso para modificar esta cámara.');
         }
 
         $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'ip'       => 'required|string',
+            'name' => 'required|string|max:255',
+            // CAMBIO CRÍTICO: Ahora Update también acepta 'string'
+            'ip' => 'required|string',
             'location' => 'nullable|string|max:255',
-            'status'   => 'required|boolean',
-            'group'    => 'nullable|string|max:255',
-            'user_id'  => 'nullable|exists:users,id'
+            'status' => 'required|boolean',
+            'group' => 'nullable|string|max:255',
         ]);
-
-        // Solo Admin y Mantenimiento pueden cambiar el dueño
-        if ($userRole !== 'admin' && $userRole !== 'mantenimiento') {
-            unset($validated['user_id']);
-        }
 
         $camera->update($validated);
 
-        $prefix = match ($userRole) {
-            'admin' => 'admin.',
-            'supervisor' => 'supervisor.',
-            'mantenimiento' => 'mantenimiento.',
-            default => 'user.',
-        };
-
-        return redirect()->route($prefix . 'cameras.index')->with('success', 'Cámara actualizada.');
+        $prefix = $request->is('admin*') ? 'admin.' : 'user.';
+        return redirect()->route($prefix . 'cameras.index')->with('success', 'Cámara actualizada correctamente.');
     }
 
     public function destroy(Camera $camera)
