@@ -7,7 +7,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\CameraController;
 use App\Http\Controllers\SupervisorController;
-use App\Http\Controllers\MantenimientoController; // Asegúrate de haber creado este controlador si lo usas, o usa la closure
 
 Route::view('/', 'index')->name('index');
 
@@ -29,11 +28,14 @@ Route::middleware(['auth', 'no_cache', 'role:admin'])
             Route::get('/create', [PersonalController::class, 'create'])->name('create');
             Route::post('/', [PersonalController::class, 'store'])->name('store');
             Route::get('/{user}/edit', [PersonalController::class, 'edit'])->name('edit');
-            Route::put('/{user}', [PersonalController::class, 'update'])->name('update'); // Cambiado a PUT para coincidir con standard
+            Route::put('/{user}', [PersonalController::class, 'update'])->name('update');
             Route::delete('/{user}', [PersonalController::class, 'destroy'])->name('destroy');
             Route::patch('/{user}/toggle', [PersonalController::class, 'toggle'])->name('toggle');
         });
 
+        // NUEVA RUTA: Video Wall (Debe ir ANTES del resource)
+        Route::get('/cameras/multiview', [CameraController::class, 'multiview'])->name('cameras.multiview');
+        
         Route::resource('cameras', CameraController::class);
     });
 
@@ -45,8 +47,10 @@ Route::middleware(['auth', 'no_cache', 'role:user'])
         Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 
         Route::prefix('cameras')->name('cameras.')->group(function () {
+            // NUEVA RUTA: Video Wall (Antes de {camera})
+            Route::get('/multiview', [CameraController::class, 'multiview'])->name('multiview');
+
             Route::get('/', [CameraController::class, 'index'])->name('index');
-            // El usuario NO crea ni edita, solo ve.
             Route::get('/{camera}', [CameraController::class, 'show'])->name('show');
         });
     });
@@ -59,15 +63,15 @@ Route::middleware(['auth', 'no_cache', 'role:supervisor'])
         Route::get('/dashboard', [SupervisorController::class, 'dashboard'])->name('dashboard');
 
         Route::prefix('cameras')->name('cameras.')->group(function () {
+            // NUEVA RUTA: Video Wall
+            Route::get('/multiview', [CameraController::class, 'multiview'])->name('multiview');
+            
             Route::get('/', [CameraController::class, 'index'])->name('index');
             Route::get('/create', [CameraController::class, 'create'])->name('create');
             Route::post('/', [CameraController::class, 'store'])->name('store');
             Route::get('/{camera}', [CameraController::class, 'show'])->name('show');
-            
-            // --- AQUÍ FALTABA LA RUTA DE ACTUALIZAR ---
             Route::get('/{camera}/edit', [CameraController::class, 'edit'])->name('edit');
-            Route::put('/{camera}', [CameraController::class, 'update'])->name('update'); 
-            // ------------------------------------------
+            Route::put('/{camera}', [CameraController::class, 'update'])->name('update');
         });
     });
 
@@ -83,7 +87,8 @@ Route::middleware(['auth', 'no_cache', 'role:mantenimiento'])
             return view('mantenimiento.dashboard', compact('totalCameras', 'offlineCameras'));
         })->name('dashboard');
 
-        // Mantenimiento tiene acceso full a cámaras (excepto crear/borrar que lo bloquea el Gate/Policy)
-        // Usamos resource para facilitar, pero limitamos lo que realmente puede hacer en el controlador
+        // NUEVA RUTA: Video Wall (Antes del resource)
+        Route::get('/cameras/multiview', [CameraController::class, 'multiview'])->name('cameras.multiview');
+
         Route::resource('cameras', CameraController::class)->except(['destroy', 'create', 'store']);
     });

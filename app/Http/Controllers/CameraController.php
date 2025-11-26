@@ -105,4 +105,17 @@ class CameraController extends Controller
             default => 'user.cameras.index',
         };
     }
+
+    public function multiview()
+    {
+        // Verificamos que tenga permiso general de ver cámaras
+        $this->authorize('ver_camaras');
+
+        // Obtenemos SOLO las cámaras activas para el monitor
+        $cameras = Camera::where('status', true)
+                        ->orderBy('name')
+                        ->get();
+
+        return view('cameras.multiview', compact('cameras'));
+    }
 }
