@@ -57,7 +57,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 @foreach($roles as $role)
                                     <label class="cursor-pointer group">
-                                        <input type="radio" name="role" value="{{ $role->name }}" class="peer sr-only">
+                                        <input type="radio" name="role_id" value="{{ $role->id }}" class="peer sr-only" required>
                                         <div class="p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg peer-checked:border-indigo-500 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-900/20 peer-checked:text-indigo-700 dark:peer-checked:text-indigo-300 hover:border-indigo-300 transition-all text-center">
                                             <span class="text-sm font-bold uppercase tracking-wide block">{{ ucfirst($role->name) }}</span>
                                         </div>
@@ -65,6 +65,18 @@
                                 @endforeach
                             </div>
                         </div>
+
+                        @if(isset($supervisors) && $supervisors->count() > 0)
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Supervisor (Opcional)</label>
+                            <select name="supervisor_id" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-slate-900 dark:text-white">
+                                <option value="">Sin supervisor</option>
+                                @foreach($supervisors as $supervisor)
+                                    <option value="{{ $supervisor->id }}">{{ $supervisor->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
 
                         <div class="pt-4">
                             <button class="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/30 transform transition hover:-translate-y-0.5 active:translate-y-0">
