@@ -1,222 +1,130 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
+<html lang="es" class="h-full"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('titulo', 'Videovigilancia')</title>
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
 
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #e0e7ff 100%);
-            min-height: 100vh;
-            color: #4b5563;
-        }
-
-        .glass-panel {
+        body { font-family: 'Outfit', sans-serif; }
+        .glass {
             background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            backdrop-filter: blur(10px);
         }
-
-        .nav-glass {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        /* Enlaces del Nav */
-        .nav-link-custom {
-            font-weight: 500;
-            color: #6b7280;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .nav-link-custom:hover, .nav-link-custom.active {
-            color: #4f46e5; /* Indigo 600 */
-            background: rgba(255, 255, 255, 0.6);
-            transform: translateY(-1px);
-        }
-
-        /* Botón Logout con degradado */
-        .btn-gradient {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            color: white;
-            font-weight: 500;
-            padding: 0.5rem 1.25rem;
-            border-radius: 9999px;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-            filter: brightness(1.05);
-        }
-
-        main {
-            animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Glass effect for dark mode */
+        .dark .glass {
+            background: rgba(17, 24, 39, 0.7);
+            border-color: rgba(55, 65, 81, 0.5);
         }
     </style>
 </head>
 
-<body>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
 
-    <!-- ========================================== -->
-    <!-- NUEVO: Overlay de Carga Logout (Oculto) -->
-    <!-- ========================================== -->
-    <div id="logout-overlay" class="fixed inset-0 bg-white/60 backdrop-blur-sm z-[100] hidden flex-col justify-center items-center transition-all duration-300">
-        <div class="relative">
-            <!-- Spinner animado -->
-            <div class="w-16 h-16 border-4 border-indigo-200 border-dashed rounded-full animate-spin"></div>
-            <div class="absolute top-0 left-0 w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-        </div>
-        <h2 class="mt-4 text-lg font-semibold text-indigo-700 animate-pulse">Cerrando sesión...</h2>
-    </div>
-    <!-- ========================================== -->
-
-    <!-- NAV -->
-    <nav class="nav-glass shadow-sm">
+    <nav class="glass sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
-
-                <!-- LOGO -->
-                <div class="flex items-center gap-2">
-                    <span class="text-3xl">📹</span>
-                    <div class="flex flex-col">
-                        <span class="font-bold text-xl bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-                            Videovigilancia
-                        </span>
-                        <span class="text-[10px] text-gray-400 font-medium tracking-widest uppercase">Security System</span>
+                
+                <div class="flex items-center gap-3">
+                    <div class="bg-indigo-600 text-white p-2 rounded-lg shadow-lg shadow-indigo-500/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
                     </div>
+                    <span class="font-bold text-xl tracking-tight">Security<span class="text-indigo-600 dark:text-indigo-400">Pro</span></span>
                 </div>
 
-                @auth
-                <div class="flex items-center gap-4 sm:gap-6">
+                <div class="flex items-center gap-4">
                     
-                    {{-- LÓGICA DE RUTAS SEGÚN ROL --}}
-                    @php
-                        $userRole = Auth::user()->role->name ?? 'user';
-                        
-                        $dashboardRoute = match($userRole) {
-                            'admin' => route('admin.dashboard'),
-                            'supervisor' => route('supervisor.dashboard'),
-                            'mantenimiento' => route('mantenimiento.dashboard'),
-                            default => route('user.dashboard'),
-                        };
+                    <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 transition-all">
+                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                    </button>
 
-                        $camerasRoute = match($userRole) {
-                            'admin' => route('admin.cameras.index'),
-                            'supervisor' => route('supervisor.cameras.index'),
-                            'mantenimiento' => route('mantenimiento.cameras.index'),
-                            default => route('user.cameras.index'),
-                        };
-                    @endphp
-
-                    <!-- Enlace Inicio -->
-                    <a href="{{ $dashboardRoute }}" class="nav-link-custom hidden sm:block {{ request()->routeIs('*.dashboard') ? 'active' : '' }}">
-                        Inicio
-                    </a>
-
-                    <!-- Enlace Cámaras -->
-                    <a href="{{ $camerasRoute }}" class="nav-link-custom hidden sm:block {{ request()->routeIs('*.cameras.*') ? 'active' : '' }}">
-                        Cámaras
-                    </a>
-
-                    <!-- Enlace Personal (Solo Admin) -->
-                    @if($userRole === 'admin')
-                        <a href="{{ route('admin.personal.index') }}" class="nav-link-custom hidden sm:block {{ request()->routeIs('admin.personal.*') ? 'active' : '' }}">
-                            Personal
-                        </a>
-                    @endif
-
-                    <div class="h-6 w-px bg-gray-300 hidden sm:block"></div>
-
-                    <div class="flex items-center gap-3">
-                        <div class="text-right hidden sm:block leading-tight">
-                            <span class="block text-sm font-medium text-gray-700">
-                                {{ Auth::user()->name }}
-                            </span>
-                            <span class="block text-[10px] text-gray-500 uppercase font-bold tracking-wide">
-                                {{ $userRole }}
-                            </span>
+                    @auth
+                        <div class="hidden md:flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
+                            <div class="text-right">
+                                <p class="text-sm font-bold text-gray-900 dark:text-white leading-none">{{ Auth::user()->name }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ Auth::user()->role->name ?? 'Usuario' }}</p>
+                            </div>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button class="bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 p-2 rounded-full transition-colors" title="Cerrar Sesión">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                                    </svg>
+                                </button>
+                            </form>
                         </div>
-                        
-                        <!-- BOTÓN CERRAR SESIÓN -->
-                        <!-- Se agregó ID id="logout-form" -->
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn-gradient text-sm">
-                                Salir
-                            </button>
-                        </form>
-                    </div>
+                    @endauth
                 </div>
-                @endauth
             </div>
         </div>
     </nav>
 
-    <!-- CONTENIDO -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         @if(session('success'))
-            <div class="mb-6 glass-panel border-l-4 border-green-500 text-green-700 px-4 py-3 rounded-r relative flex items-center gap-3" role="alert">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                    <strong class="font-bold">¡Éxito!</strong>
-                    <span class="block sm:inline">{{ session('success') }}</span>
-                </div>
+            <div class="mb-6 p-4 rounded-xl bg-green-100 border border-green-200 text-green-800 dark:bg-green-900/30 dark:border-green-800 dark:text-green-300 flex items-center gap-3 shadow-sm animate-bounce-short">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span class="font-medium">{{ session('success') }}</span>
             </div>
         @endif
 
         @yield('contenido')
     </main>
 
-    <!-- Script para manejar la animación de Logout -->
+    <footer class="border-t border-gray-200 dark:border-gray-800 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        &copy; {{ date('Y') }} Sistema de Videovigilancia Inteligente
+    </footer>
+
     <script>
-        const logoutForm = document.getElementById('logout-form');
-        if(logoutForm) {
-            logoutForm.addEventListener('submit', function(e) {
-                e.preventDefault(); // Evita el envío inmediato
-                
-                // Muestra el overlay
-                const overlay = document.getElementById('logout-overlay');
-                overlay.classList.remove('hidden');
-                overlay.classList.add('flex');
+        var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
 
-                // Espera pequeña para que la animación se renderice bien antes de enviar
-                setTimeout(() => {
-                    this.submit(); // Envía el formulario
-                }, 300); // 300ms de retardo para apreciar la animación
-            });
+        // Change the icons inside the button based on previous settings
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            themeToggleLightIcon.classList.remove('hidden');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
         }
-    </script>
 
+        var themeToggleBtn = document.getElementById('theme-toggle');
+
+        themeToggleBtn.addEventListener('click', function() {
+            // toggle icons inside button
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+
+            // if set via local storage previously
+            if (localStorage.getItem('color-theme')) {
+                if (localStorage.getItem('color-theme') === 'light') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                }
+            } else {
+                // if NOT set via local storage previously
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            }
+        });
+    </script>
 </body>
 </html>

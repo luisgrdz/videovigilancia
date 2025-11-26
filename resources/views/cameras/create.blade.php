@@ -59,130 +59,118 @@
                 {{-- Formulario --}}
                 {{-- resources/views/cameras/create.blade.php --}}
 
-                <form method="POST" action="{{ route($prefix . 'cameras.store') }}">
-                    @csrf
+<form method="POST" action="{{ route($prefix . 'cameras.store') }}">
+    @csrf
 
-                    <div class="space-y-6">
+    <div class="space-y-6">
+        
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Nombre del Dispositivo</label>
+            <input type="text" name="name" required 
+                class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:border-indigo-500 focus:ring-indigo-500/20 transition-all outline-none text-gray-900 dark:text-white placeholder-gray-400" 
+                placeholder="Ej: Cámara Entrada">
+        </div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre del Dispositivo</label>
-                            <input type="text" name="name" required
-                                class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-indigo-500 focus:ring-indigo-500/20 transition-all outline-none"
-                                placeholder="Ej: Cámara Entrada">
-                        </div>
-
-                        <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
-                            <label class="block text-xs font-bold text-indigo-600 uppercase tracking-wider mb-2">Paso 1:
-                                ¿Qué vas a conectar?</label>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="camera_type" value="phone" class="peer sr-only" checked
-                                        onchange="updatePlaceholder('phone')">
-                                    <div
-                                        class="p-3 bg-white border border-gray-200 rounded-lg peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/20 hover:bg-gray-50 transition-all text-center">
-                                        <span class="text-2xl block mb-1">📱</span>
-                                        <span class="text-sm font-medium text-gray-700">Celular (App)</span>
-                                    </div>
-                                </label>
-
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="camera_type" value="esp32" class="peer sr-only"
-                                        onchange="updatePlaceholder('esp32')">
-                                    <div
-                                        class="p-3 bg-white border border-gray-200 rounded-lg peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/20 hover:bg-gray-50 transition-all text-center">
-                                        <span class="text-2xl block mb-1">🤖</span>
-                                        <span class="text-sm font-medium text-gray-700">ESP32-CAM</span>
-                                    </div>
-                                </label>
-
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="camera_type" value="youtube" class="peer sr-only"
-                                        onchange="updatePlaceholder('youtube')">
-                                    <div
-                                        class="p-3 bg-white border border-gray-200 rounded-lg peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/20 hover:bg-gray-50 transition-all text-center">
-                                        <span class="text-2xl block mb-1">🔴</span>
-                                        <span class="text-sm font-medium text-gray-700">Demo YouTube</span>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label id="inputLabel" class="block text-sm font-semibold text-gray-700 mb-2">Dirección IP
-                                Completa</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                    </svg>
-                                </div>
-                                <input type="text" name="ip" id="ipInput" required
-                                    class="w-full pl-11 pr-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-gray-700 font-mono text-sm placeholder-gray-400"
-                                    placeholder="http://192.168.1.50:8080/video">
-                            </div>
-                            <p id="helperText" class="text-xs text-gray-500 mt-1 ml-1">
-                                Copia la dirección que aparece en la App "IP Webcam".
-                            </p>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Estatus</label>
-                                <select name="status"
-                                    class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 outline-none">
-                                    <option value="1">Activa</option>
-                                    <option value="0">Inactiva</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Ubicación</label>
-                                <input type="text" name="location"
-                                    class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 outline-none"
-                                    placeholder="Ej: Pasillo">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Grupo (Opcional)</label>
-                            <input type="text" name="group"
-                                class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 outline-none"
-                                placeholder="Ej: Oficina Principal">
-                        </div>
-
-                        <div class="pt-4">
-                            <button
-                                class="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg transform transition hover:-translate-y-1">
-                                Guardar Cámara
-                            </button>
-                        </div>
+        <div class="bg-indigo-50/50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800">
+            <label class="block text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-3">Paso 1: ¿Qué vas a conectar?</label>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <label class="cursor-pointer">
+                    <input type="radio" name="camera_type" value="phone" class="peer sr-only" checked onchange="updatePlaceholder('phone')">
+                    <div class="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/20 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-center shadow-sm">
+                        <span class="text-3xl block mb-2">📱</span>
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200">Celular (App)</span>
                     </div>
-                </form>
+                </label>
+                
+                <label class="cursor-pointer">
+                    <input type="radio" name="camera_type" value="esp32" class="peer sr-only" onchange="updatePlaceholder('esp32')">
+                    <div class="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/20 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-center shadow-sm">
+                        <span class="text-3xl block mb-2">🤖</span>
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200">ESP32-CAM</span>
+                    </div>
+                </label>
+
+                <label class="cursor-pointer">
+                    <input type="radio" name="camera_type" value="youtube" class="peer sr-only" onchange="updatePlaceholder('youtube')">
+                    <div class="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/20 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-center shadow-sm">
+                        <span class="text-3xl block mb-2">🔴</span>
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200">Demo YouTube</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div>
+            <label id="inputLabel" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Dirección IP Completa</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                    </svg>
+                </div>
+                <input 
+                    type="text" 
+                    name="ip" 
+                    id="ipInput"
+                    required 
+                    class="w-full pl-11 pr-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-gray-700 dark:text-white font-mono text-sm placeholder-gray-400" 
+                    placeholder="http://192.168.1.50:8080/video"
+                >
+            </div>
+            <p id="helperText" class="text-xs text-gray-500 dark:text-gray-400 mt-2 ml-1">
+                Copia la dirección que aparece en la App "IP Webcam".
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Estatus</label>
+                <select name="status" class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-white outline-none focus:border-indigo-500">
+                    <option value="1">Activa (Encendida)</option>
+                    <option value="0">Inactiva (Apagada)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Ubicación</label>
+                <input type="text" name="location" class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-white outline-none focus:border-indigo-500" placeholder="Ej: Pasillo">
+            </div>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Grupo (Opcional)</label>
+            <input type="text" name="group" class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-white outline-none focus:border-indigo-500" placeholder="Ej: Oficina Principal">
+        </div>
+
+        <div class="pt-4">
+            <button class="w-full py-4 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/30 transform transition hover:-translate-y-1 text-lg">
+                Guardar Dispositivo
+            </button>
+        </div>
+    </div>
+</form>
 
                 <script>
-                    function updatePlaceholder(type) {
-                        const input = document.getElementById('ipInput');
-                        const label = document.getElementById('inputLabel');
-                        const helper = document.getElementById('helperText');
+    function updatePlaceholder(type) {
+        const input = document.getElementById('ipInput');
+        const label = document.getElementById('inputLabel');
+        const helper = document.getElementById('helperText');
 
-                        if (type === 'phone') {
-                            label.innerText = 'Dirección IP del Celular';
-                            input.placeholder = 'http://192.168.1.X:8080/video';
-                            helper.innerText = 'Usa la dirección "http" que te da la app IP Webcam terminada en /video';
-                        } else if (type === 'esp32') {
-                            label.innerText = 'IP de la ESP32-CAM';
-                            input.placeholder = '192.168.1.X';
-                            helper.innerText = 'Solo escribe la IP numérica. El sistema agrega :81/stream automáticamente.';
-                        } else if (type === 'youtube') {
-                            label.innerText = 'Enlace de YouTube';
-                            input.placeholder = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
-                            helper.innerText = 'Pega el link normal del video. Se reproducirá automáticamente sin controles.';
-                        }
-                    }
-                    // Iniciar con el estado por defecto
-                    updatePlaceholder('phone');
-                </script>
+        if (type === 'phone') {
+            label.innerText = 'Dirección IP del Celular';
+            input.placeholder = 'http://192.168.1.X:8080/video';
+            helper.innerText = 'Usa la dirección "http" que te da la app IP Webcam terminada en /video';
+        } else if (type === 'esp32') {
+            label.innerText = 'IP de la ESP32-CAM';
+            input.placeholder = '192.168.1.X';
+            helper.innerText = 'Solo escribe la IP numérica. El sistema agrega :81/stream automáticamente.';
+        } else if (type === 'youtube') {
+            label.innerText = 'Enlace de YouTube';
+            input.placeholder = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+            helper.innerText = 'Pega el link normal del video. Se reproducirá automáticamente sin controles.';
+        }
+    }
+    updatePlaceholder('phone');
+</script>
             </div>
         </div>
     </div>
