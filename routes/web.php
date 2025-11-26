@@ -7,7 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\CameraController;
 use App\Http\Controllers\SupervisorController;
-use App\Models\Camera; // Necesario para el dashboard simple de mantenimiento
+use App\Http\Controllers\MantenimientoController; // Asegúrate de haber creado este controlador si lo usas, o usa la closure
 
 Route::view('/', 'index')->name('index');
 
@@ -29,7 +29,7 @@ Route::middleware(['auth', 'no_cache', 'role:admin'])
             Route::get('/create', [PersonalController::class, 'create'])->name('create');
             Route::post('/', [PersonalController::class, 'store'])->name('store');
             Route::get('/{user}/edit', [PersonalController::class, 'edit'])->name('edit');
-            Route::patch('/{user}', [PersonalController::class, 'update'])->name('update');
+            Route::put('/{user}', [PersonalController::class, 'update'])->name('update'); // Cambiado a PUT para coincidir con standard
             Route::delete('/{user}', [PersonalController::class, 'destroy'])->name('destroy');
             Route::patch('/{user}/toggle', [PersonalController::class, 'toggle'])->name('toggle');
         });
@@ -37,7 +37,7 @@ Route::middleware(['auth', 'no_cache', 'role:admin'])
         Route::resource('cameras', CameraController::class);
     });
 
-// --- RUTAS DE USUARIO NORMAL ---
+// --- RUTAS DE USUARIO NORMAL (Guardia) ---
 Route::middleware(['auth', 'no_cache', 'role:user'])
     ->prefix('user')
     ->name('user.')
@@ -46,9 +46,7 @@ Route::middleware(['auth', 'no_cache', 'role:user'])
 
         Route::prefix('cameras')->name('cameras.')->group(function () {
             Route::get('/', [CameraController::class, 'index'])->name('index');
-            Route::get('/create', [CameraController::class, 'create'])->name('create');
-            Route::get('/{camera}/edit', [CameraController::class, 'edit'])->name('edit');
-            Route::post('/', [CameraController::class, 'store'])->name('store');
+            // El usuario NO crea ni edita, solo ve.
             Route::get('/{camera}', [CameraController::class, 'show'])->name('show');
         });
     });
@@ -63,25 +61,29 @@ Route::middleware(['auth', 'no_cache', 'role:supervisor'])
         Route::prefix('cameras')->name('cameras.')->group(function () {
             Route::get('/', [CameraController::class, 'index'])->name('index');
             Route::get('/create', [CameraController::class, 'create'])->name('create');
-            Route::get('/{camera}/edit', [CameraController::class, 'edit'])->name('edit');
             Route::post('/', [CameraController::class, 'store'])->name('store');
             Route::get('/{camera}', [CameraController::class, 'show'])->name('show');
+            
+            // --- AQUÍ FALTABA LA RUTA DE ACTUALIZAR ---
+            Route::get('/{camera}/edit', [CameraController::class, 'edit'])->name('edit');
+            Route::put('/{camera}', [CameraController::class, 'update'])->name('update'); 
+            // ------------------------------------------
         });
     });
 
-// --- RUTAS DE MANTENIMIENTO (NUEVO) ---
+// --- RUTAS DE MANTENIMIENTO ---
 Route::middleware(['auth', 'no_cache', 'role:mantenimiento'])
     ->prefix('mantenimiento')
     ->name('mantenimiento.')
     ->group(function () {
-
-        // Dashboard simple directamente en la ruta (o puedes crear un controller)
+        // Dashboard
         Route::get('/dashboard', function () {
-            $totalCameras = Camera::count();
-            $offlineCameras = Camera::where('status', false)->count();
+            $totalCameras = \App\Models\Camera::count();
+            $offlineCameras = \App\Models\Camera::where('status', false)->count();
             return view('mantenimiento.dashboard', compact('totalCameras', 'offlineCameras'));
         })->name('dashboard');
 
-        // Reutilizamos el CameraController que ya configuramos para manejar permisos
-        Route::resource('cameras', CameraController::class);
+        // Mantenimiento tiene acceso full a cámaras (excepto crear/borrar que lo bloquea el Gate/Policy)
+        // Usamos resource para facilitar, pero limitamos lo que realmente puede hacer en el controlador
+        Route::resource('cameras', CameraController::class)->except(['destroy', 'create', 'store']);
     });
