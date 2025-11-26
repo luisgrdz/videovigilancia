@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Hash;
 
 class PersonalController extends Controller
 {
-    public function index()
-    {
-        // Cargamos 'role' y 'supervisor' para optimizar la consulta y mostrar el encargado
-        $users = User::with(['role', 'supervisor'])->where('role_id', '!=', 1)->paginate(10);
-        return view('personal.index', compact('users'));
-    }
+public function index()
+{
+    // Cambiamos el nombre de la variable para que coincida con la vista
+    $personals = User::where('role_id', '!=', 1)->with('role')->paginate(10);
+    
+    // Enviamos 'personals' a la vista
+    return view('personal.index', compact('personals'));
+}
 
     public function create()
     {
