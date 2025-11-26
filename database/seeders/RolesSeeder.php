@@ -2,37 +2,17 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Role;
+use Illuminate\Database\Seeder;
 
 class RolesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        $roles = [
-            [
-                'name' => 'admin',
-                'description' => 'Administrador total del sistema'
-            ],
-            [
-                'name' => 'user',
-                'description' => 'Usuario estándar con acceso a sus cámaras'
-            ],
-            [
-                'name' => 'supervisor',
-                'description' => 'Supervisor de grupo de usuarios'
-            ],
-            [
-                'name' => 'mantenimiento',
-                'description' => 'Técnico encargado de hardware y configuración'
-            ],
-        ];
-
-        foreach ($roles as $role) {
-            Role::firstOrCreate(['name' => $role['name']], $role);
-        }
+        // Usamos firstOrCreate para no duplicar si ya existen
+        Role::firstOrCreate(['name' => 'admin'], ['description' => 'Administrador Total']);
+        Role::firstOrCreate(['name' => 'supervisor'], ['description' => 'Supervisor de Operaciones']);
+        Role::firstOrCreate(['name' => 'mantenimiento'], ['description' => 'Técnico de Cámaras']);
+        Role::firstOrCreate(['name' => 'user'], ['description' => 'Guardia / Visualizador']);
     }
 }

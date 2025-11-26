@@ -10,7 +10,6 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* Ocultar scrollbar para un look más app-like (opcional) */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
@@ -46,35 +45,43 @@
                     @auth
                         @php
                             $role = Auth::user()->role->name ?? 'user';
-                            $prefix = match ($role) {
-                                'admin' => 'admin.',
-                                'supervisor' => 'supervisor.',
-                                'mantenimiento' => 'mantenimiento.',
-                                default => 'user.',
+                            // Definimos la ruta de cámaras según el rol
+                            $cameraRoute = match ($role) {
+                                'admin' => 'admin.cameras.index',
+                                'supervisor' => 'supervisor.cameras.index',
+                                'mantenimiento' => 'mantenimiento.cameras.index',
+                                default => 'user.cameras.index',
                             };
                         @endphp
 
-                        @if(in_array($role, ['admin', 'supervisor']))
+                        @can('ver_dashboard_global')
                             <a href="{{ route($role . '.dashboard') }}" 
                                class="{{ Request::routeIs($role . '.dashboard') ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200' }} px-4 py-1.5 rounded-full text-sm font-medium transition-all">
                                 Inicio
                             </a>
-                        @endif
+                        @endcan
 
-                        <a href="{{ route($prefix . 'cameras.index') }}" 
+                        @can('ver_dashboard_tecnico')
+                            <a href="{{ route('mantenimiento.dashboard') }}" 
+                               class="{{ Request::routeIs('mantenimiento.dashboard') ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200' }} px-4 py-1.5 rounded-full text-sm font-medium transition-all">
+                                Panel Técnico
+                            </a>
+                        @endcan
+
+                        <a href="{{ route($cameraRoute) }}" 
                            class="{{ Request::routeIs('*cameras*') ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200' }} px-4 py-1.5 rounded-full text-sm font-medium transition-all">
                             Cámaras
                         </a>
 
-                        @if($role === 'admin')
+                        @can('gestionar_personal')
                             <a href="{{ route('admin.personal.index') }}" 
                                class="{{ Request::routeIs('admin.personal*') ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200' }} px-4 py-1.5 rounded-full text-sm font-medium transition-all">
                                 Personal
                             </a>
-                        @endif
+                        @endcan
+
                     @endauth
                 </div>
-
                 <div class="flex items-center gap-4">
                     <button id="theme-toggle" type="button" class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors focus:outline-none">
                         <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
@@ -125,7 +132,6 @@
     </footer>
 
     <script>
-        // Lógica del tema oscuro
         var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
         var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
         var themeToggleBtn = document.getElementById('theme-toggle');
