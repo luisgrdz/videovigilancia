@@ -5,22 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\Camera;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Importante para usar authorize
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CameraController extends Controller
 {
-    use AuthorizesRequests; // Activa los permisos en este controlador
+    use AuthorizesRequests;
 
     public function index(Request $request)
     {
-        // Todos pueden ver (según definimos en el Gate), pero filtramos qué ven
+        // Verificamos permiso general
         $this->authorize('ver_camaras');
 
         $query = Camera::query();
-        
-        // Si no es Admin ni Supervisor, solo ve las cámaras activas (por ejemplo)
         $userRole = Auth::user()->role->name;
-        if (!in_array($userRole, ['admin', 'supervisor'])) {
+        
+        // --- CORRECCIÓN AQUÍ ---
+        // Antes: if (!in_array($userRole, ['admin', 'supervisor']))
+        // Ahora: Agregamos 'mantenimiento' para que ellos también vean las cámaras apagadas
+        if (!in_array($userRole, ['admin', 'supervisor', 'mantenimiento'])) {
+            // Si es un usuario normal (Guardia), SOLO ve las activas
             $query->where('status', true);
         }
 
@@ -30,7 +33,7 @@ class CameraController extends Controller
 
     public function create()
     {
-        $this->authorize('crear_camaras'); // Bloqueo de seguridad
+        $this->authorize('crear_camaras');
         return view('cameras.create');
     }
 
@@ -51,7 +54,7 @@ class CameraController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->route($this->getRedirectRoute())->with('success', 'Cámara registrada.');
+        return redirect()->route($this->getRedirectRoute())->with('success', 'Cámara registrada correctamente.');
     }
 
     public function show(Camera $camera)
@@ -62,7 +65,7 @@ class CameraController extends Controller
 
     public function edit(Camera $camera)
     {
-        $this->authorize('editar_camaras'); // Solo Admin, Supervisor, Mantenimiento
+        $this->authorize('editar_camaras');
         return view('cameras.edit', compact('camera'));
     }
 
@@ -74,28 +77,27 @@ class CameraController extends Controller
             'name'     => 'required|string|max:255',
             'ip'       => 'required|string',
             'location' => 'nullable|string|max:255',
-            'status'   => 'required|boolean',
+            'status'   => 'required|boolean', // Aquí es donde Mantenimiento reactiva la cámara
             'group'    => 'nullable|string|max:255',
         ]);
 
         $camera->update($validated);
 
-        return redirect()->route($this->getRedirectRoute())->with('success', 'Cámara actualizada.');
+        return redirect()->route($this->getRedirectRoute())->with('success', 'Cámara actualizada correctamente.');
     }
 
     public function destroy(Camera $camera)
     {
-        $this->authorize('borrar_camaras'); // SOLO ADMIN
+        $this->authorize('borrar_camaras');
         $camera->delete();
 
-        return redirect()->route($this->getRedirectRoute())->with('success', 'Cámara eliminada.');
+        return redirect()->route($this->getRedirectRoute())->with('success', 'Cámara eliminada del sistema.');
     }
 
-    // Helper para saber a dónde volver según el rol
+    // Función auxiliar para redirigir al usuario a su panel correcto
     private function getRedirectRoute()
     {
         $role = Auth::user()->role->name;
-        // Ajusta estos prefijos según tus rutas web.php
         return match ($role) {
             'admin' => 'admin.cameras.index',
             'supervisor' => 'supervisor.cameras.index',

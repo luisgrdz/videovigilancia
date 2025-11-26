@@ -15,38 +15,37 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // --- 1. PERMISOS DE CÁMARAS ---
-
-        // ¿Quién puede ver el listado y detalles? (Todos)
+        // --- 1. PERMISOS DE VISUALIZACIÓN (El más importante para el video) ---
+        
+        // Todos los usuarios autenticados pueden ver cámaras y video
         Gate::define('ver_camaras', function (User $user) {
             return true; 
         });
 
-        // ¿Quién puede crear cámaras nuevas? (Solo Admin y Supervisor)
+        // --- 2. PERMISOS DE GESTIÓN ---
+
+        // Crear: Solo Admin y Supervisor
         Gate::define('crear_camaras', function (User $user) {
             return in_array($user->role->name, ['admin', 'supervisor']);
         });
 
-        // ¿Quién puede editar configuración? (Admin, Supervisor y Mantenimiento)
+        // Editar: Admin, Supervisor y Mantenimiento
         Gate::define('editar_camaras', function (User $user) {
             return in_array($user->role->name, ['admin', 'supervisor', 'mantenimiento']);
         });
 
-        // ¿Quién puede eliminar? (SOLO Admin - Es peligroso)
+        // Borrar: SOLO Admin
         Gate::define('borrar_camaras', function (User $user) {
             return $user->role->name === 'admin';
         });
 
+        // --- 3. PERMISOS DE PERSONAL ---
 
-        // --- 2. PERMISOS DE PERSONAL (Usuarios) ---
-
-        // Solo el Admin puede tocar usuarios
         Gate::define('gestionar_personal', function (User $user) {
             return $user->role->name === 'admin';
         });
 
-
-        // --- 3. PERMISOS DE PANELES (Dashboards) ---
+        // --- 4. PERMISOS DE DASHBOARDS ---
 
         Gate::define('ver_dashboard_global', function (User $user) {
             return in_array($user->role->name, ['admin', 'supervisor']);

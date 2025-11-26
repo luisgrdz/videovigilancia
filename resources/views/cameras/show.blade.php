@@ -6,11 +6,20 @@
 <div class="max-w-6xl mx-auto">
 
     @php
-        $prefix = Request::is('admin*') ? 'admin.' : 'user.';
+        // CORRECCIÓN: Detectar el prefijo correcto según el rol real
+        $userRole = Auth::user()->role->name ?? 'user';
+        $prefix = match ($userRole) {
+            'admin' => 'admin.',
+            'supervisor' => 'supervisor.',
+            'mantenimiento' => 'mantenimiento.',
+            default => 'user.',
+        };
+
         $ip = trim($camera->ip);
         $isYoutube = false;
         $streamUrl = '';
 
+        // Lógica de detección de video (YouTube / IP)
         if (str_contains($ip, 'youtube.com') || str_contains($ip, 'youtu.be')) {
             $isYoutube = true;
             preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $ip, $match);
@@ -44,17 +53,17 @@
             </div>
         </div>
         
-<div class="flex gap-2">
-    <a href="{{ route($prefix . 'cameras.index') }}" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-        Volver
-    </a>
-    
-    @can('editar_camaras')
-    <a href="{{ route($prefix . 'cameras.edit', $camera) }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 shadow-md shadow-indigo-500/20 transition-colors">
-        Configurar
-    </a>
-    @endcan
-</div>
+        <div class="flex gap-2">
+            <a href="{{ route($prefix . 'cameras.index') }}" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                Volver
+            </a>
+            
+            @can('editar_camaras')
+            <a href="{{ route($prefix . 'cameras.edit', $camera) }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 shadow-md shadow-indigo-500/20 transition-colors">
+                Configurar
+            </a>
+            @endcan
+        </div>
     </div>
 
     <div class="bg-black rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/10 dark:ring-slate-700 relative aspect-video group">
