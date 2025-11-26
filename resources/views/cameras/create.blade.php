@@ -1,6 +1,6 @@
 @extends('components.layouts.app')
 
-@section('titulo', 'Registrar cámara')
+@section('titulo', 'Nueva Cámara')
 
 @section('contenido')
 
@@ -15,163 +15,135 @@
     @endphp
 
     <div class="max-w-2xl mx-auto">
-
+        
         <div class="mb-6">
-            <a href="{{ route($prefix . 'cameras.index') }}"
-                class="inline-flex items-center gap-2 text-gray-500 hover:text-indigo-600 transition-colors duration-200 font-medium group">
-                <div
-                    class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 transform group-hover:-translate-x-0.5 transition-transform" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                </div>
-                <span>Volver al listado</span>
+            <a href="{{ route($prefix . 'cameras.index') }}" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                Volver al panel
             </a>
         </div>
 
-        {{-- Tarjeta Principal Glass --}}
-        {{-- REEMPLAZA LA LÍNEA DEL DIV "glass-panel" POR ESTA: --}}
-<div class="glass-panel bg-white/80 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-xl border border-white/50 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden relative">
-            {{-- Decoración superior --}}
-            <div class="h-2 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            
+            <div class="h-1.5 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
 
-            <div class="p-8 sm:p-10">
-
-                {{-- Encabezado --}}
+            <div class="p-8">
                 <div class="flex items-center gap-4 mb-8">
-                    <div class="p-3 bg-indigo-50 rounded-2xl text-indigo-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
+                    <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-800">Registrar Cámara</h1>
-                        <p class="text-gray-500 text-sm">Ingresa los detalles técnicos del nuevo dispositivo.</p>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Registrar Dispositivo</h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm">Configura una nueva fuente de video.</p>
                     </div>
                 </div>
 
-                {{-- Formulario --}}
-                {{-- resources/views/cameras/create.blade.php --}}
+                <form method="POST" action="{{ route($prefix . 'cameras.store') }}">
+                    @csrf
 
-<form method="POST" action="{{ route($prefix . 'cameras.store') }}">
-    @csrf
+                    <div class="space-y-6">
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Nombre descriptivo</label>
+                            <input type="text" name="name" required 
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-900 dark:text-white placeholder-slate-400 transition-all" 
+                                placeholder="Ej: Puerta Principal">
+                        </div>
 
-    <div class="space-y-6">
-        
-        <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Nombre del Dispositivo</label>
-            <input type="text" name="name" required 
-                class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:border-indigo-500 focus:ring-indigo-500/20 transition-all outline-none text-gray-900 dark:text-white placeholder-gray-400" 
-                placeholder="Ej: Cámara Entrada">
-        </div>
+                        <div class="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Tipo de Conexión</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="camera_type" value="phone" class="peer sr-only" checked onchange="updatePlaceholder('phone')">
+                                    <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500 group-hover:border-slate-300 dark:group-hover:border-slate-500 transition-all text-center">
+                                        <span class="text-2xl block mb-1">📱</span>
+                                        <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Celular IP</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="camera_type" value="esp32" class="peer sr-only" onchange="updatePlaceholder('esp32')">
+                                    <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500 group-hover:border-slate-300 dark:group-hover:border-slate-500 transition-all text-center">
+                                        <span class="text-2xl block mb-1">🤖</span>
+                                        <span class="text-xs font-bold text-slate-700 dark:text-slate-200">ESP32</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="camera_type" value="youtube" class="peer sr-only" onchange="updatePlaceholder('youtube')">
+                                    <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500 group-hover:border-slate-300 dark:group-hover:border-slate-500 transition-all text-center">
+                                        <span class="text-2xl block mb-1">🔴</span>
+                                        <span class="text-xs font-bold text-slate-700 dark:text-slate-200">YouTube</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
 
-        <div class="bg-indigo-50/50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800">
-            <label class="block text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-3">Paso 1: ¿Qué vas a conectar?</label>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <label class="cursor-pointer">
-                    <input type="radio" name="camera_type" value="phone" class="peer sr-only" checked onchange="updatePlaceholder('phone')">
-                    <div class="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/20 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-center shadow-sm">
-                        <span class="text-3xl block mb-2">📱</span>
-                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200">Celular (App)</span>
+                        <div>
+                            <label id="inputLabel" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">URL o IP</label>
+                            <div class="relative">
+                                <input 
+                                    type="text" 
+                                    name="ip" 
+                                    id="ipInput"
+                                    required 
+                                    class="w-full pl-4 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-900 dark:text-white font-mono text-sm placeholder-slate-400 transition-all" 
+                                    placeholder="http://192.168.1.x:8080/video"
+                                >
+                            </div>
+                            <p id="helperText" class="text-xs text-slate-500 dark:text-slate-400 mt-2 ml-1">Pegue la dirección completa.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Estado Inicial</label>
+                                <select name="status" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
+                                    <option value="1">🟢 Activa</option>
+                                    <option value="0">🔴 Inactiva</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Ubicación</label>
+                                <input type="text" name="location" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Ej: Recepción">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Grupo (Opcional)</label>
+                            <input type="text" name="group" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Ej: Oficina Central">
+                        </div>
+
+                        <div class="pt-4">
+                            <button class="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transform transition hover:-translate-y-0.5 active:translate-y-0">
+                                Confirmar y Guardar
+                            </button>
+                        </div>
                     </div>
-                </label>
-                
-                <label class="cursor-pointer">
-                    <input type="radio" name="camera_type" value="esp32" class="peer sr-only" onchange="updatePlaceholder('esp32')">
-                    <div class="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/20 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-center shadow-sm">
-                        <span class="text-3xl block mb-2">🤖</span>
-                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200">ESP32-CAM</span>
-                    </div>
-                </label>
-
-                <label class="cursor-pointer">
-                    <input type="radio" name="camera_type" value="youtube" class="peer sr-only" onchange="updatePlaceholder('youtube')">
-                    <div class="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/20 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-center shadow-sm">
-                        <span class="text-3xl block mb-2">🔴</span>
-                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200">Demo YouTube</span>
-                    </div>
-                </label>
+                </form>
             </div>
-        </div>
-
-        <div>
-            <label id="inputLabel" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Dirección IP Completa</label>
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                    </svg>
-                </div>
-                <input 
-                    type="text" 
-                    name="ip" 
-                    id="ipInput"
-                    required 
-                    class="w-full pl-11 pr-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-gray-700 dark:text-white font-mono text-sm placeholder-gray-400" 
-                    placeholder="http://192.168.1.50:8080/video"
-                >
-            </div>
-            <p id="helperText" class="text-xs text-gray-500 dark:text-gray-400 mt-2 ml-1">
-                Copia la dirección que aparece en la App "IP Webcam".
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Estatus</label>
-                <select name="status" class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-white outline-none focus:border-indigo-500">
-                    <option value="1">Activa (Encendida)</option>
-                    <option value="0">Inactiva (Apagada)</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Ubicación</label>
-                <input type="text" name="location" class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-white outline-none focus:border-indigo-500" placeholder="Ej: Pasillo">
-            </div>
-        </div>
-        
-        <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Grupo (Opcional)</label>
-            <input type="text" name="group" class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-white outline-none focus:border-indigo-500" placeholder="Ej: Oficina Principal">
-        </div>
-
-        <div class="pt-4">
-            <button class="w-full py-4 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/30 transform transition hover:-translate-y-1 text-lg">
-                Guardar Dispositivo
-            </button>
         </div>
     </div>
-</form>
 
-                <script>
-    function updatePlaceholder(type) {
-        const input = document.getElementById('ipInput');
-        const label = document.getElementById('inputLabel');
-        const helper = document.getElementById('helperText');
+    <script>
+        function updatePlaceholder(type) {
+            const input = document.getElementById('ipInput');
+            const label = document.getElementById('inputLabel');
+            const helper = document.getElementById('helperText');
 
-        if (type === 'phone') {
-            label.innerText = 'Dirección IP del Celular';
-            input.placeholder = 'http://192.168.1.X:8080/video';
-            helper.innerText = 'Usa la dirección "http" que te da la app IP Webcam terminada en /video';
-        } else if (type === 'esp32') {
-            label.innerText = 'IP de la ESP32-CAM';
-            input.placeholder = '192.168.1.X';
-            helper.innerText = 'Solo escribe la IP numérica. El sistema agrega :81/stream automáticamente.';
-        } else if (type === 'youtube') {
-            label.innerText = 'Enlace de YouTube';
-            input.placeholder = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
-            helper.innerText = 'Pega el link normal del video. Se reproducirá automáticamente sin controles.';
+            if (type === 'phone') {
+                label.innerText = 'URL del Celular (IP Webcam)';
+                input.placeholder = 'http://192.168.1.X:8080/video';
+                helper.innerText = 'Use la dirección completa terminada en /video';
+            } else if (type === 'esp32') {
+                label.innerText = 'IP Local (ESP32)';
+                input.placeholder = '192.168.1.X';
+                helper.innerText = 'Solo la IP numérica. Se agregará el puerto automáticamente.';
+            } else if (type === 'youtube') {
+                label.innerText = 'Enlace de Video';
+                input.placeholder = 'https://www.youtube.com/watch?v=...';
+                helper.innerText = 'Enlace directo del video o directo de YouTube.';
+            }
         }
-    }
-    updatePlaceholder('phone');
-</script>
-            </div>
-        </div>
-    </div>
+        // Inicializar
+        updatePlaceholder('phone');
+    </script>
 
 @endsection

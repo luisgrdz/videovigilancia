@@ -4,146 +4,97 @@
 
 @section('contenido')
 
-@php
-    $userRole = Auth::user()->role->name ?? 'user';
-    $prefix = match($userRole) {
-        'admin' => 'admin.',
-        'supervisor' => 'supervisor.',
-        'mantenimiento' => 'mantenimiento.',
-        default => 'user.',
-    };
-@endphp
+    @php
+        $userRole = Auth::user()->role->name ?? 'user';
+        $prefix = match ($userRole) {
+            'admin' => 'admin.',
+            'supervisor' => 'supervisor.',
+            'mantenimiento' => 'mantenimiento.',
+            default => 'user.',
+        };
+    @endphp
 
-<div class="max-w-2xl mx-auto">
-    
-    {{-- Botón Volver --}}
-    <div class="mb-6">
-        <a href="{{ route($prefix . 'cameras.index') }}" class="inline-flex items-center gap-2 text-gray-500 hover:text-indigo-600 transition-colors duration-200 font-medium group">
-            <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-            </div>
-            <span>Volver al listado</span>
-        </a>
-    </div>
+    <div class="max-w-2xl mx-auto">
+        <div class="mb-6">
+            <a href="{{ route($prefix . 'cameras.index') }}" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                Cancelar
+            </a>
+        </div>
 
-    {{-- Tarjeta Principal --}}
-    <div class="glass-panel bg-white/80 backdrop-blur-xl border border-white/50 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden relative">
-        
-        {{-- Decoración superior --}}
-        <div class="h-2 w-full bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500"></div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div class="h-1.5 w-full bg-amber-500"></div>
 
-        <div class="p-8 sm:p-10">
-            
-            {{-- Encabezado --}}
-            <div class="flex items-center gap-4 mb-8">
-                <div class="p-3 bg-yellow-50 rounded-2xl text-yellow-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">Editar Dispositivo</h1>
-                    <p class="text-gray-500 text-sm">Actualizando configuración de <span class="font-semibold">{{ $camera->name }}</span></p>
-                </div>
-            </div>
-
-            {{-- Formulario --}}
-            <form method="POST" action="{{ route($prefix . 'cameras.update', $camera) }}">
-                @csrf
-                @method('PATCH')
-
-                <div class="space-y-6">
-                    
-                    <!-- Nombre -->
+            <div class="p-8">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-xl text-amber-600 dark:text-amber-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre del Dispositivo</label>
-                        <input type="text" name="name" value="{{ old('name', $camera->name) }}" required 
-                            class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-gray-700 placeholder-gray-400">
-                    </div>
-
-                    <!-- Grid IP y Estado -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- IP -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Dirección IP / URL</label>
-                            <input type="text" name="ip" value="{{ old('ip', $camera->ip) }}" required 
-                                class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-gray-700 font-mono text-sm">
-                        </div>
-
-                        <!-- Estatus -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Estado Operativo</label>
-                            <div class="relative">
-                                <select name="status" 
-                                    class="w-full pl-4 pr-10 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-gray-700 appearance-none cursor-pointer">
-                                    <option value="1" {{ $camera->status ? 'selected' : '' }}>Activa</option>
-                                    <option value="0" {{ !$camera->status ? 'selected' : '' }}>Inactiva</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Ubicación y Grupo -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Ubicación -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Ubicación Física</label>
-                            <input type="text" name="location" value="{{ old('location', $camera->location) }}" 
-                                class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-gray-700">
-                        </div>
-
-                        <!-- Grupo -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Grupo / Zona</label>
-                            <input type="text" name="group" value="{{ old('group', $camera->group) }}" 
-                                class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-gray-700"
-                                placeholder="Ej: Planta Baja">
-                        </div>
-                    </div>
-
-                    {{-- CAMPO REASIGNAR DUEÑO (ADMIN Y MANTENIMIENTO) --}}
-                    @if(($userRole === 'admin' || $userRole === 'mantenimiento') && isset($users))
-                        <div class="pt-4 border-t border-gray-100">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <span class="flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                    </svg>
-                                    Propietario Asignado (Reasignar)
-                                </span>
-                            </label>
-                            <div class="relative">
-                                <select name="user_id" 
-                                    class="w-full pl-4 pr-10 py-3 rounded-xl bg-indigo-50 border border-indigo-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-gray-700 appearance-none cursor-pointer">
-                                    @foreach($users as $u)
-                                        <option value="{{ $u->id }}" {{ $camera->user_id == $u->id ? 'selected' : '' }}>
-                                            {{ $u->name }} ({{ $u->email }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-indigo-400">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </div>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2 ml-1">Selecciona un nuevo usuario para transferir esta cámara.</p>
-                        </div>
-                    @endif
-
-                    <!-- Botón Submit -->
-                    <div class="pt-4">
-                        <button type="submit" class="w-full py-3.5 px-4 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white font-bold rounded-xl shadow-lg shadow-yellow-500/30 transform transition hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-                            Guardar Cambios
-                        </button>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Editar Configuración</h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm">Modificando: {{ $camera->name }}</p>
                     </div>
                 </div>
-            </form>
+
+                <form method="POST" action="{{ route($prefix . 'cameras.update', $camera) }}">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Nombre</label>
+                            <input type="text" name="name" value="{{ $camera->name }}" required 
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900 dark:text-white transition-all">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">URL / IP de Conexión</label>
+                            <input type="text" name="ip" value="{{ $camera->ip }}" required 
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900 dark:text-white font-mono text-sm transition-all">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Estado</label>
+                                <select name="status" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20">
+                                    <option value="1" {{ $camera->status ? 'selected' : '' }}>🟢 Activa</option>
+                                    <option value="0" {{ !$camera->status ? 'selected' : '' }}>🔴 Inactiva</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Ubicación</label>
+                                <input type="text" name="location" value="{{ $camera->location }}" 
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Grupo</label>
+                            <input type="text" name="group" value="{{ $camera->group }}" 
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20">
+                        </div>
+
+                        <div class="pt-4 flex gap-4">
+                            <button class="flex-1 py-3.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-lg shadow-amber-500/30 transform transition hover:-translate-y-0.5">
+                                Guardar Cambios
+                            </button>
+                            
+                            @if($userRole === 'admin')
+                                <button type="button" onclick="if(confirm('¿Borrar cámara permanentemente?')) document.getElementById('delete-form').submit();" class="px-4 py-3.5 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                </form>
+                
+                @if($userRole === 'admin')
+                    <form id="delete-form" action="{{ route($prefix . 'cameras.destroy', $camera) }}" method="POST" class="hidden">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                @endif
+            </div>
         </div>
     </div>
-</div>
-
 @endsection
