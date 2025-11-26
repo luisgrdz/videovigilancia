@@ -33,9 +33,8 @@
         </div>
 
         {{-- Tarjeta Principal Glass --}}
-        <div
-            class="glass-panel bg-white/80 backdrop-blur-xl border border-white/50 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden relative">
-
+        {{-- REEMPLAZA LA LÍNEA DEL DIV "glass-panel" POR ESTA: --}}
+<div class="glass-panel bg-white/80 dark:bg-gray-800/80 dark:border-gray-700 backdrop-blur-xl border border-white/50 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden relative">
             {{-- Decoración superior --}}
             <div class="h-2 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
 
