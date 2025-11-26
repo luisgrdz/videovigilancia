@@ -5,6 +5,7 @@
 @section('contenido')
 
 @php
+    // Detectamos rol para prefijos (útil para rutas que dependen del prefijo)
     $prefix = Request::is('admin*') ? 'admin.' : (Request::is('supervisor*') ? 'supervisor.' : (Request::is('mantenimiento*') ? 'mantenimiento.' : 'user.'));
 @endphp
 
@@ -13,10 +14,13 @@
         <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Mis Dispositivos</h1>
         <p class="text-slate-500 dark:text-slate-400 mt-1 text-sm">Panel de monitoreo en tiempo real.</p>
     </div>
+    
+    @can('crear_camaras')
     <a href="{{ route($prefix . 'cameras.create') }}" class="group inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
         Nueva Cámara
     </a>
+    @endcan
 </div>
 
 @if($cameras->count() > 0)
@@ -61,13 +65,18 @@
                         <span class="truncate">{{ $camera->location ?? 'Sin ubicación' }}</span>
                     </div>
 
-                    <div class="pt-4 border-t border-slate-100 dark:border-slate-700 grid grid-cols-2 gap-2">
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-700 grid {{ Auth::user()->can('editar_camaras') ? 'grid-cols-2' : 'grid-cols-1' }} gap-2">
+                        
                         <a href="{{ route($prefix . 'cameras.show', $camera) }}" class="text-center py-2 px-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
                             Ver
                         </a>
+
+                        @can('editar_camaras')
                         <a href="{{ route($prefix . 'cameras.edit', $camera) }}" class="text-center py-2 px-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                             Ajustes
                         </a>
+                        @endcan
+
                     </div>
                 </div>
             </div>
@@ -82,10 +91,13 @@
             <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
         </div>
         <h3 class="text-lg font-bold text-slate-900 dark:text-white">Sin cámaras activas</h3>
-        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-6 max-w-xs">Añade tu primer dispositivo de vigilancia para comenzar el monitoreo.</p>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-6 max-w-xs">No hay dispositivos disponibles para visualizar.</p>
+        
+        @can('crear_camaras')
         <a href="{{ route($prefix . 'cameras.create') }}" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-md transition-all">
             Registrar Cámara
         </a>
+        @endcan
     </div>
 @endif
 

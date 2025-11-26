@@ -44,14 +44,17 @@
             </div>
         </div>
         
-        <div class="flex gap-2">
-            <a href="{{ route($prefix . 'cameras.index') }}" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                Volver
-            </a>
-            <a href="{{ route($prefix . 'cameras.edit', $camera) }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 shadow-md shadow-indigo-500/20 transition-colors">
-                Configurar
-            </a>
-        </div>
+<div class="flex gap-2">
+    <a href="{{ route($prefix . 'cameras.index') }}" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+        Volver
+    </a>
+    
+    @can('editar_camaras')
+    <a href="{{ route($prefix . 'cameras.edit', $camera) }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 shadow-md shadow-indigo-500/20 transition-colors">
+        Configurar
+    </a>
+    @endcan
+</div>
     </div>
 
     <div class="bg-black rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-900/10 dark:ring-slate-700 relative aspect-video group">
