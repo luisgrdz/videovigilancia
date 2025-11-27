@@ -24,7 +24,6 @@
         </div>
 
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-            
             <div class="h-1.5 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
 
             <div class="p-8">
@@ -45,9 +44,12 @@
                         
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Nombre descriptivo</label>
-                            <input type="text" name="name" required 
-                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-900 dark:text-white placeholder-slate-400 transition-all" 
+                            <input type="text" name="name" value="{{ old('name') }}" required 
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border @error('name') border-red-500 dark:border-red-500 @else border-slate-200 dark:border-slate-700 @enderror focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-900 dark:text-white placeholder-slate-400 transition-all" 
                                 placeholder="Ej: Puerta Principal">
+                            @error('name')
+                                <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700">
@@ -84,12 +86,16 @@
                                     type="text" 
                                     name="ip" 
                                     id="ipInput"
+                                    value="{{ old('ip') }}"
                                     required 
-                                    class="w-full pl-4 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-900 dark:text-white font-mono text-sm placeholder-slate-400 transition-all" 
+                                    class="w-full pl-4 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border @error('ip') border-red-500 dark:border-red-500 @else border-slate-200 dark:border-slate-700 @enderror focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-900 dark:text-white font-mono text-sm placeholder-slate-400 transition-all" 
                                     placeholder="http://192.168.1.x:8080/video"
                                 >
                             </div>
                             <p id="helperText" class="text-xs text-slate-500 dark:text-slate-400 mt-2 ml-1">Pegue la dirección completa.</p>
+                            @error('ip')
+                                <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -102,13 +108,13 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Ubicación</label>
-                                <input type="text" name="location" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Ej: Recepción">
+                                <input type="text" name="location" value="{{ old('location') }}" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Ej: Recepción">
                             </div>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Grupo (Opcional)</label>
-                            <input type="text" name="group" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Ej: Oficina Central">
+                            <input type="text" name="group" value="{{ old('group') }}" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Ej: Oficina Central">
                         </div>
 
                         <div class="pt-4">
@@ -142,7 +148,6 @@
                 helper.innerText = 'Enlace directo del video o directo de YouTube.';
             }
         }
-        // Inicializar
         updatePlaceholder('phone');
     </script>
 

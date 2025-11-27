@@ -11,19 +11,33 @@ class CameraController extends Controller
 {
     use AuthorizesRequests;
 
+    // Regla de validación reutilizable para seguridad
+    private function getIpValidationRules()
+    {
+        return ['required', 'string', function ($attribute, $value, $fail) {
+            // 1. ¿Es una IP válida? (Ej: 192.168.1.50)
+            $isIp = filter_var($value, FILTER_VALIDATE_IP);
+            
+            // 2. ¿Es una URL segura? (Debe empezar por http:// o https://)
+            $isUrl = filter_var($value, FILTER_VALIDATE_URL) && preg_match('/^https?:\/\//', $value);
+            
+            // 3. ¿Es un link de YouTube? (Excepción para demos)
+            $isYoutube = str_contains($value, 'youtube.com') || str_contains($value, 'youtu.be');
+
+            if (!$isIp && !$isUrl && !$isYoutube) {
+                $fail("La dirección ingresada no es segura. Debe ser una IP válida (192.168.x.x) o una URL que inicie con http:// o https://.");
+            }
+        }];
+    }
+
     public function index(Request $request)
     {
-        // Verificamos permiso general
         $this->authorize('ver_camaras');
 
         $query = Camera::query();
-        $userRole = Auth::user()->role->name;
+        $userRole = Auth::user()->role->name ?? 'user';
         
-        // --- CORRECCIÓN AQUÍ ---
-        // Antes: if (!in_array($userRole, ['admin', 'supervisor']))
-        // Ahora: Agregamos 'mantenimiento' para que ellos también vean las cámaras apagadas
         if (!in_array($userRole, ['admin', 'supervisor', 'mantenimiento'])) {
-            // Si es un usuario normal (Guardia), SOLO ve las activas
             $query->where('status', true);
         }
 
@@ -42,8 +56,8 @@ class CameraController extends Controller
         $this->authorize('crear_camaras');
 
         $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'ip'       => 'required|string',
+            'name'     => 'required|string|max:255|regex:/^[\pL\s\d\-]+$/u', // Solo letras, números y guiones (Anti-XSS)
+            'ip'       => $this->getIpValidationRules(), // <--- REGLA DE SEGURIDAD APLICADA
             'location' => 'nullable|string|max:255',
             'status'   => 'required|boolean',
             'group'    => 'nullable|string|max:255',
@@ -54,7 +68,7 @@ class CameraController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->route($this->getRedirectRoute())->with('success', 'Cámara registrada correctamente.');
+        return redirect()->route($this->getRedirectRoute())->with('success', 'Cámara registrada y validada correctamente.');
     }
 
     public function show(Camera $camera)
@@ -74,16 +88,16 @@ class CameraController extends Controller
         $this->authorize('editar_camaras');
 
         $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'ip'       => 'required|string',
+            'name'     => 'required|string|max:255|regex:/^[\pL\s\d\-]+$/u',
+            'ip'       => $this->getIpValidationRules(), // <--- REGLA DE SEGURIDAD APLICADA
             'location' => 'nullable|string|max:255',
-            'status'   => 'required|boolean', // Aquí es donde Mantenimiento reactiva la cámara
+            'status'   => 'required|boolean',
             'group'    => 'nullable|string|max:255',
         ]);
 
         $camera->update($validated);
 
-        return redirect()->route($this->getRedirectRoute())->with('success', 'Cámara actualizada correctamente.');
+        return redirect()->route($this->getRedirectRoute())->with('success', 'Configuración de cámara actualizada.');
     }
 
     public function destroy(Camera $camera)
@@ -91,13 +105,12 @@ class CameraController extends Controller
         $this->authorize('borrar_camaras');
         $camera->delete();
 
-        return redirect()->route($this->getRedirectRoute())->with('success', 'Cámara eliminada del sistema.');
+        return redirect()->route($this->getRedirectRoute())->with('success', 'Dispositivo eliminado de forma segura.');
     }
 
-    // Función auxiliar para redirigir al usuario a su panel correcto
     private function getRedirectRoute()
     {
-        $role = Auth::user()->role->name;
+        $role = Auth::user()->role->name ?? 'user';
         return match ($role) {
             'admin' => 'admin.cameras.index',
             'supervisor' => 'supervisor.cameras.index',
@@ -108,14 +121,8 @@ class CameraController extends Controller
 
     public function multiview()
     {
-        // Verificamos que tenga permiso general de ver cámaras
         $this->authorize('ver_camaras');
-
-        // Obtenemos SOLO las cámaras activas para el monitor
-        $cameras = Camera::where('status', true)
-                        ->orderBy('name')
-                        ->get();
-
+        $cameras = Camera::where('status', true)->orderBy('name')->get();
         return view('cameras.multiview', compact('cameras'));
     }
 }

@@ -36,7 +36,7 @@
                 </div>
             </div>
             <p class="text-3xl font-bold text-slate-900 dark:text-white">
-                {{ \App\Models\Personal::count() }}
+                {{ \App\Models\User::where('role_id', '!=', 1)->count() }}
             </p>
         </div>
 

@@ -6,22 +6,20 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class PersonalController extends Controller
 {
-public function index()
-{
-    // Cambiamos el nombre de la variable para que coincida con la vista
-    $personals = User::where('role_id', '!=', 1)->with('role')->paginate(10);
-    
-    // Enviamos 'personals' a la vista
-    return view('personal.index', compact('personals'));
-}
+    public function index()
+    {
+        $personals = User::where('role_id', '!=', 1)->with('role')->paginate(10);
+        return view('personal.index', compact('personals'));
+    }
 
     public function create()
     {
         $roles = Role::where('name', '!=', 'admin')->get();
-
+        // Buscamos usuarios que tengan el rol 'supervisor' (id 2 usualmente)
         $supervisors = User::whereHas('role', function ($q) {
             $q->where('name', 'supervisor');
         })->get();
@@ -55,12 +53,9 @@ public function index()
     public function edit(User $user)
     {
         $roles = Role::where('name', '!=', 'admin')->get();
-
         $supervisors = User::whereHas('role', function ($q) {
             $q->where('name', 'supervisor');
-        })
-            ->where('id', '!=', $user->id)
-            ->get();
+        })->where('id', '!=', $user->id)->get();
 
         return view('personal.edit', compact('user', 'roles', 'supervisors'));
     }
@@ -90,17 +85,25 @@ public function index()
         return redirect()->route('admin.personal.index')
             ->with('success', 'Usuario actualizado.');
     }
-
-    public function destroy(User $user)
+public function destroy(User $user)
     {
+        if ($user->id === Auth::id()) {
+            return redirect()->route('admin.personal.index')
+                ->with('error', 'ACCIÓN DENEGADA: No puedes eliminar tu propia cuenta por seguridad.'); // Cambiado a 'error'
+        }
+        
         $user->delete();
-
-        return redirect()->route('admin.personal.index')
-            ->with('success', 'Usuario eliminado.');
+        return redirect()->route('admin.personal.index')->with('success', 'Usuario eliminado.');
     }
 
     public function toggle(User $user)
     {
+        // Evitar desactivarse a sí mismo
+        if ($user->id === Auth::id()) {
+            return redirect()->route('admin.personal.index')
+                ->with('success', 'ERROR: No puedes desactivar tu propia cuenta.');
+        }
+
         $user->update([
             'status' => !$user->status
         ]);
