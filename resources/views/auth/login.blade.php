@@ -1,188 +1,61 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso al sistema</title>
+@extends('components.layouts.guest')
 
-    {{-- Cargamos Tailwind --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+@section('titulo', 'Iniciar Sesión')
 
-    <!-- Fuente moderna: Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+@section('contenido')
+    <div class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
 
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            /* Mismo fondo que el Dashboard */
-            background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #e0e7ff 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden; /* Para evitar scroll por los blobs decorativos */
-        }
-
-        /* Efecto Cristal */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-        }
-
-        /* Animación suave de entrada */
-        .fade-up {
-            animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Animación de fondo (Blobs) */
-        @keyframes blob {
-            0% { transform: translate(0px, 0px) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-            100% { transform: translate(0px, 0px) scale(1); }
-        }
-
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-            animation-delay: 4s;
-        }
-    </style>
-</head>
-
-<body class="text-gray-600">
-
-    <!-- Elementos decorativos de fondo (Blobs animados) -->
-    <div class="absolute top-0 left-1/4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-    <div class="absolute top-0 right-1/4 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-    <div class="absolute -bottom-8 left-1/3 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-
-    <!-- Tarjeta de Login -->
-    <div class="relative w-full max-w-md px-6">
-        
-        <div class="glass-card rounded-3xl p-8 sm:p-10 fade-up relative overflow-hidden">
-            
-            <!-- ========================================== -->
-            <!-- NUEVO: Overlay de Carga (Oculto por defecto) -->
-            <!-- ========================================== -->
-            <div id="loading-overlay" class="hidden absolute inset-0 bg-white/60 backdrop-blur-sm z-50 flex flex-col justify-center items-center transition-all duration-300">
-                <div class="relative">
-                    <!-- Spinner animado -->
-                    <div class="w-16 h-16 border-4 border-indigo-200 border-dashed rounded-full animate-spin"></div>
-                    <div class="absolute top-0 left-0 w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+            <div class="flex justify-center mb-8">
+                <div class="bg-blue-600 text-white p-3 rounded-2xl shadow-xl shadow-blue-500/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
                 </div>
-                <h2 class="mt-4 text-lg font-semibold text-indigo-700 animate-pulse">Accediendo...</h2>
             </div>
-            <!-- ========================================== -->
 
-            <!-- Botón Volver al Inicio -->
-            <a href="{{ route('index') }}" class="absolute top-6 left-6 group flex items-center gap-2 px-4 py-2 bg-white/50 hover:bg-white/80 text-indigo-600 text-sm font-semibold rounded-full shadow-sm border border-indigo-100 hover:shadow-md transition-all duration-300 backdrop-blur-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-hover:-translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-white/20 dark:border-slate-700 rounded-3xl shadow-2xl overflow-hidden">
+                <div class="p-8 sm:p-10">
+                                <!-- Botón para retroceder a la página de inicio -->
+            <a href="{{ url('/') }}" class="inline-flex items-center gap-2 mb-6 text-sm text-slate-600 dark:text-slate-300 hover:text-blue-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
-                <span>Volver</span>
+                Volver a inicio
             </a>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white text-center mb-2">Bienvenido de nuevo</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-center text-sm mb-8">Ingresa tus credenciales para acceder al sistema.</p>
 
-            <!-- Encabezado -->
-            <div class="text-center mb-8 mt-6">
-                <h1 class="text-3xl font-bold mb-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                    Bienvenido
-                </h1>
-                <p class="text-sm text-gray-500">Ingresa tus credenciales para acceder al sistema de videovigilancia.</p>
-            </div>
+                    <form method="POST" action="{{ route('login') }}">
+                        @csrf
 
-            <!-- Alertas de Error -->
-            @if($errors->any())
-                <div class="mb-6 p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm text-center">
-                    {{ $errors->first() }}
-                </div>
-            @endif
+                        <div class="space-y-5">
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Correo Electrónico</label>
+                                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
+                                    placeholder="usuario@empresa.com">
+                                @error('email')
+                                    <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-            <!-- Formulario (Se agregó ID para JS) -->
-            <form id="login-form" action="{{ route('login.post') }}" method="POST">
-                @csrf
-
-                <!-- Email -->
-                <div class="mb-5">
-                    <label for="email" class="block text-sm font-semibold text-gray-700 mb-2 pl-1">Correo electrónico</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <!-- Icono Email -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                            </svg>
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Contraseña</label>
+                                <input id="password" type="password" name="password" required autocomplete="current-password"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
+                                    placeholder="••••••••">
+                                @error('password')
+                                    <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5">
+                                Iniciar Sesión
+                            </button>
                         </div>
-                        <input type="email" name="email" id="email" 
-                            class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/50 border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder-gray-400 text-gray-700" 
-                            placeholder="usuario@empresa.com" required autofocus>
-                    </div>
+                    </form>
                 </div>
-
-                <!-- Password -->
-                <div class="mb-6">
-                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-2 pl-1">Contraseña</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <!-- Icono Candado -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                        </div>
-                        <input type="password" name="password" id="password" 
-                            class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/50 border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder-gray-400 text-gray-700" 
-                            placeholder="••••••••" required>
-                    </div>
-                </div>
-
-                <!-- Botón -->
-                <button type="submit" 
-                    class="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/30 transform transition hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Iniciar Sesión
-                </button>
-
-            </form>
-
-            <!-- Footer -->
-            <div class="mt-8 text-center">
-                <p class="text-xs text-gray-400 font-medium">
-                    Sistema de Videovigilancia &copy; {{ date('Y') }}
-                </p>
             </div>
-
         </div>
     </div>
-
-    <!-- Script para manejar la animación de carga -->
-    <script>
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            // Validamos muy básicamente que los campos no estén vacíos para no activar la carga por error
-            // (El atributo 'required' de HTML5 ya hace la mayor parte del trabajo)
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            if(email && password) {
-                // Mostramos el overlay quitando la clase 'hidden'
-                const loader = document.getElementById('loading-overlay');
-                loader.classList.remove('hidden');
-                loader.classList.add('flex'); // Aseguramos que use flexbox para centrar
-            }
-        });
-    </script>
-
-</body>
-</html>
+@endsection

@@ -1,108 +1,84 @@
-@extends('components.layouts.app')
+@extends('components.layouts.guest')
 
-@section('titulo', 'Inicio - Videovigilancia')
+@section('titulo', 'Bienvenido a VisionGuard')
 
 @section('contenido')
-
-<div class="max-w-6xl mx-auto">
-
-    {{-- HERO SECTION: Bienvenida --}}
-    <div class="text-center mb-16 fade-up relative">
+    <div class="flex-grow flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 relative">
         
-        <!-- Decoración de fondo para el título -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-32 bg-indigo-400/20 rounded-full blur-3xl -z-10"></div>
-
-        <h1 class="text-5xl font-bold mb-6 text-gray-800 tracking-tight">
-            Bienvenido al <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Sistema de Seguridad</span>
-        </h1>
-        <p class="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
-            Plataforma centralizada para el monitoreo y gestión de dispositivos. Revisa a continuación las novedades y protocolos vigentes para una operación segura.
-        </p>
-
-        @guest
-            <div class="mt-8">
-                <a href="{{ route('login') }}" class="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white rounded-full btn-gradient hover:scale-105 transform transition duration-300">
-                    Acceder al Sistema
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                </a>
+        <div class="absolute top-6 left-6 flex items-center gap-2">
+            <div class="bg-blue-600 text-white p-1.5 rounded-lg shadow-lg shadow-blue-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
             </div>
-        @endguest
-    </div>
+            <span class="font-bold text-xl tracking-tight text-slate-800 dark:text-white">
+                Vision<span class="text-blue-600 dark:text-blue-400">Guard</span>
+            </span>
+        </div>
 
-    {{-- GRID DE TARJETAS INFORMATIVAS --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center max-w-3xl mx-auto py-20">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider border border-blue-100 dark:border-blue-800 mb-6 animate-fade-in-down">
+                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                Sistema v2.0 Activo
+            </div>
 
-        {{-- 1. CONSEJO DE SEGURIDAD (Azul/Índigo) --}}
-        <div class="glass-panel rounded-3xl p-1 overflow-hidden transition duration-300 hover:-translate-y-2 hover:shadow-xl group">
-            <div class="bg-gradient-to-br from-blue-50 to-indigo-50/50 h-full rounded-[1.3rem] p-8 relative">
-                <!-- Icono flotante -->
-                <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                </div>
-                
-                <h3 class="text-xl font-bold text-gray-800 mb-3">Consejo de Seguridad</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Verifica periódicamente las cámaras críticas para asegurarte de que no haya fallos de conexión o áreas ciegas sin cobertura.
-                </p>
-                
-                <!-- Barra decorativa inferior -->
-                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <h1 class="text-5xl sm:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-6 animate-fade-in-up">
+                Seguridad Inteligente <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                    Al Alcance de Todos
+                </span>
+            </h1>
+
+            <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 mb-10 leading-relaxed animate-fade-in-up delay-100">
+                Monitorea tus espacios en tiempo real desde cualquier dispositivo. 
+                Compatible con ESP32, cámaras IP y móviles.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up delay-200">
+                @auth
+                    @php
+                        $role = Auth::user()->role->name ?? 'user';
+                        $route = $role === 'user' ? 'user.cameras.index' : ($role === 'admin' ? 'admin.dashboard' : 'supervisor.dashboard');
+                    @endphp
+                    <a href="{{ route($route) }}" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/30 transition-all hover:scale-105 flex items-center gap-2">
+                        Ir al Panel
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/30 transition-all hover:scale-105 flex items-center gap-2 w-full sm:w-auto justify-center">
+                        Iniciar Sesión
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
+                    </a>
+                @endauth
             </div>
         </div>
 
-        {{-- 2. ALERTA IMPORTANTE (Rojo/Naranja) --}}
-        <div class="glass-panel rounded-3xl p-1 overflow-hidden transition duration-300 hover:-translate-y-2 hover:shadow-xl group">
-            <div class="bg-gradient-to-br from-red-50 to-orange-50/50 h-full rounded-[1.3rem] p-8 relative">
-                <!-- Icono flotante -->
-                <div class="w-14 h-14 bg-red-100 text-red-500 rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto mt-12 w-full">
+            <div class="p-6 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm text-center">
+                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                 </div>
-
-                <h3 class="text-xl font-bold text-gray-800 mb-3">Alerta Importante</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Si se detecta movimiento fuera del horario establecido, <span class="font-semibold text-red-500">notifica inmediatamente</span> al supervisor de turno mediante el protocolo de emergencia.
-                </p>
-
-                <!-- Barra decorativa inferior -->
-                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-400 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <h3 class="font-bold text-slate-900 dark:text-white">Multi-Cámara</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Soporte para Video Wall y monitoreo simultáneo.</p>
+            </div>
+            <div class="p-6 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm text-center">
+                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <h3 class="font-bold text-slate-900 dark:text-white">Alta Seguridad</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Roles estrictos y validación de conexiones.</p>
+            </div>
+            <div class="p-6 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm text-center">
+                <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                </div>
+                <h3 class="font-bold text-slate-900 dark:text-white">Tiempo Real</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Detección de estado online/offline instantánea.</p>
             </div>
         </div>
-
-        {{-- 3. RECORDATORIO DIARIO (Verde/Esmeralda) --}}
-        <div class="glass-panel rounded-3xl p-1 overflow-hidden transition duration-300 hover:-translate-y-2 hover:shadow-xl group">
-            <div class="bg-gradient-to-br from-green-50 to-emerald-50/50 h-full rounded-[1.3rem] p-8 relative">
-                <!-- Icono flotante -->
-                <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                    </svg>
-                </div>
-
-                <h3 class="text-xl font-bold text-gray-800 mb-3">Recordatorio Diario</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Mantén los accesos principales desbloqueados únicamente para el personal autorizado y revisa el estado de los sensores al finalizar el turno.
-                </p>
-
-                <!-- Barra decorativa inferior -->
-                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-green-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </div>
-        </div>
-
     </div>
 
-    {{-- FOOTER SIMPLIFICADO --}}
-    <div class="mt-16 text-center border-t border-gray-200/50 pt-8">
-        <p class="text-sm text-gray-400">
-            ¿Necesitas reportar un incidente técnico? <a href="#" class="text-indigo-500 hover:text-indigo-700 font-medium transition">Contactar Soporte</a>
-        </p>
-    </div>
-
-</div>
-
+    <footer class="py-6 text-center text-sm text-slate-400 dark:text-slate-500">
+        &copy; {{ date('Y') }} Proyecto de Programación Web Avanzada
+    </footer>
 @endsection
