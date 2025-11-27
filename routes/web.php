@@ -33,7 +33,6 @@ Route::middleware(['auth', 'no_cache', 'role:admin'])
             Route::patch('/{user}/toggle', [PersonalController::class, 'toggle'])->name('toggle');
         });
 
-        // NUEVA RUTA: Video Wall (Debe ir ANTES del resource)
         Route::get('/cameras/multiview', [CameraController::class, 'multiview'])->name('cameras.multiview');
         
         Route::resource('cameras', CameraController::class);
@@ -47,7 +46,7 @@ Route::middleware(['auth', 'no_cache', 'role:user'])
         Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 
         Route::prefix('cameras')->name('cameras.')->group(function () {
-            // NUEVA RUTA: Video Wall (Antes de {camera})
+
             Route::get('/multiview', [CameraController::class, 'multiview'])->name('multiview');
 
             Route::get('/', [CameraController::class, 'index'])->name('index');

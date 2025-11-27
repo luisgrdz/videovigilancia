@@ -5,12 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-// use Spatie\Permission\Traits\HasRoles; <--- ELIMINADO (Causaba el error)
 use App\Traits\Auditable; 
 
 class User extends Authenticatable
 {
-    // use HasFactory, Notifiable, HasRoles, Auditable; <--- ELIMINADO HasRoles
     use HasFactory, Notifiable, Auditable; 
 
     protected $fillable = [
@@ -32,6 +30,8 @@ class User extends Authenticatable
         'password' => 'hashed',
         'status' => 'boolean',
     ];
+
+    //Implementacion de Gates (Compuertas)
 
     // Relación con Rol (Tu sistema manual)
     public function role()
