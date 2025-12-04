@@ -10,7 +10,6 @@ use App\Traits\Auditable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, Auditable; 
-
     protected $fillable = [
         'name',
         'email',
