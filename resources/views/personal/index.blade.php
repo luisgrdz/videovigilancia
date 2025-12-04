@@ -18,16 +18,14 @@
         </a>
     </div>
 
-    <div
-        class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr
-                        class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">
+                    <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">
                         <th class="px-6 py-4">Nombre</th>
                         <th class="px-6 py-4">Rol</th>
-                        <th class="px-6 py-4">Email</th>
+                        <th class="px-6 py-4">Supervisor</th> <th class="px-6 py-4">Email</th>
                         <th class="px-6 py-4 text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -36,8 +34,7 @@
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold">
+                                    <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold">
                                         {{ substr($personal->name, 0, 1) }}
                                     </div>
                                     <span class="font-medium text-slate-900 dark:text-white">{{ $personal->name }}</span>
@@ -55,12 +52,25 @@
                                     {{ ucfirst($personal->role->name ?? 'Sin rol') }}
                                 </span>
                             </td>
+                            
+                            <td class="px-6 py-4">
+                                @if($personal->supervisor)
+                                    <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                        <span class="text-sm font-medium">{{ $personal->supervisor->name }}</span>
+                                    </div>
+                                @else
+                                    <span class="text-xs text-slate-400 italic">Sin supervisor</span>
+                                @endif
+                            </td>
+
                             <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
                                 {{ $personal->email }}
                             </td>
                             <td class="px-6 py-4">
-                                <div
-                                    class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <a href="{{ route('admin.personal.edit', $personal) }}"
                                         class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
                                         title="Editar">
@@ -74,7 +84,7 @@
                                         onsubmit="return confirm('¿Eliminar usuario permanentemente?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button
+                                        <button type="submit"
                                             class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                                             title="Eliminar">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,6 +93,7 @@
                                             </svg>
                                         </button>
                                     </form>
+
                                     <form action="{{ route('admin.personal.toggle', $personal) }}" method="POST" class="inline">
                                         @csrf
                                         @method('PATCH')

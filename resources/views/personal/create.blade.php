@@ -35,7 +35,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Nombre Completo</label>
                             <input type="text" name="name" value="{{ old('name') }}" required 
-                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border @error('name') border-red-500 dark:border-red-500 @else border-slate-200 dark:border-slate-700 @enderror focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-slate-900 dark:text-white transition-all placeholder-slate-400" 
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-slate-900 dark:text-white transition-all placeholder-slate-400" 
                                 placeholder="Ej: Juan Pérez">
                             @error('name')
                                 <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
@@ -45,7 +45,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Correo Electrónico</label>
                             <input type="email" name="email" value="{{ old('email') }}" required 
-                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border @error('email') border-red-500 dark:border-red-500 @else border-slate-200 dark:border-slate-700 @enderror focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-slate-900 dark:text-white transition-all placeholder-slate-400" 
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-slate-900 dark:text-white transition-all placeholder-slate-400" 
                                 placeholder="juan@empresa.com">
                             @error('email')
                                 <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
@@ -55,7 +55,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Contraseña</label>
                             <input type="password" name="password" required 
-                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border @error('password') border-red-500 dark:border-red-500 @else border-slate-200 dark:border-slate-700 @enderror focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-slate-900 dark:text-white transition-all">
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-slate-900 dark:text-white transition-all">
                             @error('password')
                                 <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
                             @enderror
@@ -78,17 +78,20 @@
                             @enderror
                         </div>
 
-                        @if(isset($supervisors) && $supervisors->count() > 0)
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Supervisor (Opcional)</label>
-                            <select name="supervisor_id" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-slate-900 dark:text-white">
-                                <option value="">Sin supervisor</option>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                                Supervisor Asignado <span class="text-red-500">*</span>
+                            </label>
+                            <select name="supervisor_id" required class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-slate-900 dark:text-white">
+                                <option value="" disabled selected>Seleccione un supervisor...</option>
                                 @foreach($supervisors as $supervisor)
                                     <option value="{{ $supervisor->id }}">{{ $supervisor->name }}</option>
                                 @endforeach
                             </select>
+                            @error('supervisor_id')
+                                <p class="text-red-500 text-xs mt-1 font-medium">Debes seleccionar un supervisor.</p>
+                            @enderror
                         </div>
-                        @endif
 
                         <div class="pt-4">
                             <button class="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/30 transform transition hover:-translate-y-0.5 active:translate-y-0">

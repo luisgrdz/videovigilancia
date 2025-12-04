@@ -12,14 +12,17 @@ class PersonalController extends Controller
 {
     public function index()
     {
-        $personals = User::where('role_id', '!=', 1)->with('role')->paginate(10);
+        // Cargamos la relación 'supervisor' para no hacer 100 consultas (Eager Loading)
+        $personals = User::where('role_id', '!=', 1)
+            ->with(['role', 'supervisor']) 
+            ->paginate(10);
+            
         return view('personal.index', compact('personals'));
     }
 
     public function create()
     {
         $roles = Role::where('name', '!=', 'admin')->get();
-        // Buscamos usuarios que tengan el rol 'supervisor' (id 2 usualmente)
         $supervisors = User::whereHas('role', function ($q) {
             $q->where('name', 'supervisor');
         })->get();
@@ -34,7 +37,8 @@ class PersonalController extends Controller
             'email'    => 'required|email|unique:users',
             'password' => 'required|min:6',
             'role_id'  => 'required|exists:roles,id',
-            'supervisor_id' => 'nullable|exists:users,id'
+            // CAMBIO: Ahora es obligatorio (required)
+            'supervisor_id' => 'required|exists:users,id'
         ]);
 
         User::create([
@@ -66,7 +70,8 @@ class PersonalController extends Controller
             'name'  => 'required|string',
             'email' => "required|email|unique:users,email,$user->id",
             'role_id' => 'required|exists:roles,id',
-            'supervisor_id' => 'nullable|exists:users,id'
+            // CAMBIO: Ahora es obligatorio
+            'supervisor_id' => 'required|exists:users,id'
         ]);
 
         $data = [
@@ -85,9 +90,9 @@ class PersonalController extends Controller
         return redirect()->route('admin.personal.index')
             ->with('success', 'Usuario actualizado.');
     }
-public function destroy(User $user)
+
+    public function destroy(User $user)
     {
-        // PROTECCIÓN: Evitar borrar la cuenta propia
         if ($user->id === Auth::id()) {
             return redirect()->route('admin.personal.index')
                 ->with('error', 'ACCIÓN DENEGADA: No puedes eliminar tu propia cuenta.');
@@ -96,12 +101,11 @@ public function destroy(User $user)
         $user->delete();
 
         return redirect()->route('admin.personal.index')
-            ->with('success', 'Usuario eliminado correctamente.');
+            ->with('success', 'Usuario eliminado.');
     }
 
     public function toggle(User $user)
     {
-        // Evitar desactivarse a sí mismo
         if ($user->id === Auth::id()) {
             return redirect()->route('admin.personal.index')
                 ->with('success', 'ERROR: No puedes desactivar tu propia cuenta.');
