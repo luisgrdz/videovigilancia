@@ -31,7 +31,6 @@
 
             <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 mb-10 leading-relaxed animate-fade-in-up delay-100">
                 Monitorea tus espacios en tiempo real desde cualquier dispositivo. 
-                Compatible con ESP32, cámaras IP y móviles.
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up delay-200">
