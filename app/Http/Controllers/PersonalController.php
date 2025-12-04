@@ -87,13 +87,16 @@ class PersonalController extends Controller
     }
 public function destroy(User $user)
     {
+        // PROTECCIÓN: Evitar borrar la cuenta propia
         if ($user->id === Auth::id()) {
             return redirect()->route('admin.personal.index')
-                ->with('error', 'ACCIÓN DENEGADA: No puedes eliminar tu propia cuenta por seguridad.'); // Cambiado a 'error'
+                ->with('error', 'ACCIÓN DENEGADA: No puedes eliminar tu propia cuenta.');
         }
-        
+
         $user->delete();
-        return redirect()->route('admin.personal.index')->with('success', 'Usuario eliminado.');
+
+        return redirect()->route('admin.personal.index')
+            ->with('success', 'Usuario eliminado correctamente.');
     }
 
     public function toggle(User $user)

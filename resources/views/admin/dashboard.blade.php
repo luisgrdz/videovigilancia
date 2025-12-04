@@ -28,7 +28,7 @@
             </p>
         </div>
 
-        <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
+<div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider">Personal</h3>
                 <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
